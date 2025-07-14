@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
-import logo from '../assets/Dturn_logo.png';
+import logo from '../assets/Sellerfly.png';
 import icon from '../assets/is-greater-than.png';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
@@ -81,7 +81,7 @@ const Sidebar = () => {
 const SidebarContent = ({ user, handleLogout }) => (
   <div className="d-flex flex-column h-100 px-3 pt-3">
     <div className="text-center mb-4">
-      <img src={logo} alt="Logo" className="img-fluid" style={{ maxHeight: '50px' }} />
+      <img src={logo} alt="Logo" className="img-fluid" style={{ maxHeight: '70px' }} />
     </div>
 
     <div className="flex-grow-1 text-center mt-5">
