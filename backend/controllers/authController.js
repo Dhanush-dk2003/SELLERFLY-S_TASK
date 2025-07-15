@@ -1,20 +1,25 @@
-import { register } from '../services/authService.js';
-import { login } from '../services/authService.js';
-import prisma from '../prisma/client.js';
+import { register } from "../services/authService.js";
+import { login } from "../services/authService.js";
+import prisma from "../prisma/client.js";
 
 export const registerUser = async (req, res) => {
   try {
     const { email, password, name, role } = req.body;
 
     if (!email || !password || !name || !role) {
-      return res.status(400).json({ message: 'All fields are required' });
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     const user = await register(email, password, name, role);
-    res.status(201).json({ message: 'User registered successfully', user: { id: user.id, email: user.email, role: user.role } });
+    res
+      .status(201)
+      .json({
+        message: "User registered successfully",
+        user: { id: user.id, email: user.email, role: user.role },
+      });
   } catch (err) {
-    console.error('Registration error:', err.message);
-    res.status(500).json({ message: err.message || 'Internal server error' });
+    console.error("Registration error:", err.message);
+    res.status(500).json({ message: err.message || "Internal server error" });
   }
 };
 export const loginUser = async (req, res) => {
@@ -22,7 +27,9 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
     const { token, user } = await login(email, password);
@@ -49,7 +56,7 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
@@ -57,7 +64,7 @@ export const loginUser = async (req, res) => {
     });
 
     res.status(200).json({
-      message: 'Login successful',
+      message: "Login successful",
       user: {
         id: user.id,
         email: user.email,
@@ -66,47 +73,48 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error('Login error:', err.message);
-    res.status(401).json({ message: err.message || 'Invalid credentials' });
+    console.error("Login error:", err.message);
+    res.status(401).json({ message: err.message || "Invalid credentials" });
   }
 };
 
-
-
 export const logoutUser = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user ? req.user.id : null;
 
-    // Find latest session without logoutTime
-    const latestSession = await prisma.userSession.findFirst({
-      where: {
-        userId,
-        logoutTime: null,
-      },
-      orderBy: {
-        loginTime: 'desc',
+if (userId) {
+  // Find latest session without logoutTime
+  const latestSession = await prisma.userSession.findFirst({
+    where: {
+      userId,
+      logoutTime: null,
+    },
+    orderBy: {
+      loginTime: "desc",
+    },
+  });
+
+  if (latestSession) {
+    const logoutTime = new Date();
+    const durationMs = logoutTime - latestSession.loginTime;
+    const durationHours = durationMs / (1000 * 60 * 60);
+
+    await prisma.userSession.update({
+      where: { id: latestSession.id },
+      data: {
+        logoutTime,
+        totalDuration: durationHours,
       },
     });
+  }
+}
 
-    if (latestSession) {
-      const logoutTime = new Date();
-      const durationMs = logoutTime - latestSession.loginTime;
-      const durationHours = durationMs / (1000 * 60 * 60);
 
-      await prisma.userSession.update({
-        where: { id: latestSession.id },
-        data: {
-          logoutTime,
-          totalDuration: durationHours,
-        },
-      });
-    }
-
-    res.clearCookie('token');
-    res.status(200).json({ message: 'Logout successful' });
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logout successful" });
   } catch (err) {
-    console.error('Logout error:', err.message);
-    res.status(500).json({ message: 'Failed to logout' });
+    console.error("Logout error:", err.message);
+    res.status(500).json({ message: "Failed to logout" });
   }
 };
 export const getAllSessions = async (req, res) => {
@@ -135,7 +143,7 @@ export const getAllSessions = async (req, res) => {
         },
       },
       orderBy: {
-        loginTime: 'asc',
+        loginTime: "asc",
       },
     });
 
@@ -160,7 +168,11 @@ export const getAllSessions = async (req, res) => {
       }
 
       // Update last logout if later
-      if (session.logoutTime && (!userAggregates[userId].lastLogout || session.logoutTime > userAggregates[userId].lastLogout)) {
+      if (
+        session.logoutTime &&
+        (!userAggregates[userId].lastLogout ||
+          session.logoutTime > userAggregates[userId].lastLogout)
+      ) {
         userAggregates[userId].lastLogout = session.logoutTime;
       }
 
@@ -177,12 +189,7 @@ export const getAllSessions = async (req, res) => {
 
     res.status(200).json(finalData);
   } catch (err) {
-    console.error('Fetch sessions error:', err.message);
-    res.status(500).json({ message: 'Failed to fetch sessions' });
+    console.error("Fetch sessions error:", err.message);
+    res.status(500).json({ message: "Failed to fetch sessions" });
   }
 };
-
-
-
-
-
