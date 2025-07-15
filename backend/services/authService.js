@@ -44,6 +44,13 @@ export const login = async (email, password) => {
     process.env.JWT_SECRET,
     { expiresIn: '1d' }
   );
+  // Create a new session
+  await prisma.userSession.create({
+    data: {
+      userId: user.id,
+      loginTime: new Date(),
+    },
+  });
 
   return { token, user };
 };

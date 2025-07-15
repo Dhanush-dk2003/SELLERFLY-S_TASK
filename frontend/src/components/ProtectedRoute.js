@@ -10,10 +10,10 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   if (loading) return <div className="text-center mt-5">Loading...</div>;
 
   // If no user, logout and redirect to login
-  if (!user) {
-    logout?.();
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
+  if (!user && window.location.pathname !== '/logout') {
+  return <Navigate to="/login" />;
+}
+
 
   // If allowedRoles are defined and user's role is not included, logout and redirect
   if (allowedRoles && !allowedRoles.includes(user.role)) {

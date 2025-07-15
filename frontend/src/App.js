@@ -6,6 +6,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/AdminDashboard';
 import ManagerDashboard from './pages/ManagerDashboard';
 import UserDashboard from './pages/UserDashboard';
+import ManagerStatus from './pages/ManagerStatus';
+import Logout from './pages/Logout';
 
 function App() {
   return (
@@ -16,6 +18,7 @@ function App() {
 
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<Register />} />
 
           {/* Role-based protected routes */}
@@ -32,6 +35,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['MANAGER']}>
                 <ManagerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/managerstatusview"
+            element={
+              <ProtectedRoute allowedRoles={['MANAGER']}>
+                <ManagerStatus />
               </ProtectedRoute>
             }
           />

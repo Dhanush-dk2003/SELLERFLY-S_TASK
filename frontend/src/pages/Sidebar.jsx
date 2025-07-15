@@ -7,16 +7,17 @@ import icon from '../assets/is-greater-than.png';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const Sidebar = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery({ maxWidth: 999 }); // 👈 screen < 1000px
 
-  const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      logout();
-      navigate('/login');
-    }
-  };
+const handleLogout = () => {
+  if (window.confirm('Are you sure you want to logout?')) {
+    navigate('/logout');
+  }
+};
+
+
 
   return (
     <>
@@ -86,17 +87,35 @@ const SidebarContent = ({ user, handleLogout }) => (
 
     <div className="flex-grow-1 text-center mt-5">
       <ul className="nav flex-column w-100 mt-5">
-        {(user?.role === 'ADMIN' || user?.role === 'MANAGER') && (
-          <li className="nav-item mb-3">
-            <span className="nav-link active bg-dark text-white rounded mt-5">Projects</span>
-          </li>
-        )}
-        {user?.role === 'USER' && (
-          <li className="nav-item mb-3">
-            <span className="nav-link active bg-dark text-white rounded mt-5">Tasks</span>
-          </li>
-        )}
-      </ul>
+  {(user?.role === 'ADMIN' || user?.role === 'MANAGER') && (
+    <>
+      <li className="nav-item mb-3">
+        <button
+          className="nav-link bg-dark text-white rounded w-100"
+          onClick={() => window.location.href = "/managerdashboard"}
+        >
+          Projects
+        </button>
+      </li>
+      {user?.role === 'MANAGER' && (
+        <li className="nav-item mb-3">
+          <button
+            className="nav-link bg-dark text-white rounded w-100"
+            onClick={() => window.location.href = "/managerstatusview"}
+          >
+            Status
+          </button>
+        </li>
+      )}
+    </>
+  )}
+  {user?.role === 'USER' && (
+    <li className="nav-item mb-3">
+      <span className="nav-link active bg-dark text-white rounded mt-5">Tasks</span>
+    </li>
+  )}
+</ul>
+
     </div>
 
     <div className="text-center mt-auto pb-3">
