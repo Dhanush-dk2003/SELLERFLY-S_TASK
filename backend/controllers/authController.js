@@ -150,6 +150,7 @@ export const getAllSessions = async (req, res) => {
           firstLogin: session.loginTime,
           lastLogout: session.logoutTime || null,
           totalHours: 0,
+          isActive: false, // ✅ add default
         };
       }
 
@@ -165,6 +166,11 @@ export const getAllSessions = async (req, res) => {
 
       // Add total hours
       userAggregates[userId].totalHours += session.totalDuration || 0;
+
+      // ✅ If there is any session with logoutTime null, mark as active
+      if (!session.logoutTime) {
+        userAggregates[userId].isActive = true;
+      }
     });
 
     const finalData = Object.values(userAggregates);
@@ -175,6 +181,7 @@ export const getAllSessions = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch sessions' });
   }
 };
+
 
 
 

@@ -27,10 +27,22 @@ const ManagerStatus = () => {
     }
   };
 
-  const formatDateTime = (dateString) => {
+  const formatDate = (dateString) => {
     if (!dateString) return "—";
     const date = new Date(dateString);
-    return isNaN(date.getTime()) ? "—" : date.toLocaleString();
+    return isNaN(date.getTime()) ? "—" : date.toLocaleDateString();
+  };
+
+  const formatTime12Hour = (dateString) => {
+    if (!dateString) return "—";
+    const date = new Date(dateString);
+    return isNaN(date.getTime())
+      ? "—"
+      : date.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
   };
 
   return (
@@ -52,42 +64,46 @@ const ManagerStatus = () => {
               <table className="table table-bordered text-center">
                 <thead className="table-dark">
                   <tr>
-                    <th>#</th>
+                    <th>S.No</th>
+                    <th>Date</th>
                     <th>Name</th>
-                    
                     <th>Role</th>
                     <th>Login Time</th>
                     <th>Logout Time</th>
-                    <th>Total Hours</th>
+                    <th>Worked Hours</th>
                     <th>Status</th>
                   </tr>
                 </thead>
-                <tbody>
-  {userSessions.map((session, i) => (
-    <tr key={session.user.id}>
-      <td>{i + 1}</td>
-      <td>{session.user.name}</td>
-      
-      <td>{session.user.role}</td>
-      <td>{formatDateTime(session.firstLogin)}</td>
-      <td>{formatDateTime(session.lastLogout)}</td>
-      <td>{session.totalHours ? session.totalHours.toFixed(2) : "—"}</td>
-      <td>
-        {session.lastLogout ? (
-          <span className="badge bg-secondary">Logged Out</span>
-        ) : (
-          <span className="badge bg-success">Active</span>
-        )}
-      </td>
-    </tr>
-  ))}
-  {userSessions.length === 0 && (
-    <tr>
-      <td colSpan="8">No sessions found</td>
-    </tr>
-  )}
-</tbody>
 
+                <tbody>
+                  {userSessions.map((session, i) => (
+                    <tr key={`${session.user.id}-${session.firstLogin}`}>
+                      <td>{i + 1}</td>
+                      <td>{formatDate(session.firstLogin)}</td>
+                      <td>{session.user.name}</td>
+                      <td>{session.user.role}</td>
+                      <td>{formatTime12Hour(session.firstLogin)}</td>
+                      <td>{formatTime12Hour(session.lastLogout)}</td>
+                      <td>
+                        {session.totalHours
+                          ? session.totalHours.toFixed(2)
+                          : "—"}
+                      </td>
+                      <td>
+                        {session.isActive ? (
+                          <span className="badge bg-success">Active</span>
+                        ) : (
+                          <span className="badge bg-secondary">Logged Out</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {userSessions.length === 0 && (
+                    <tr>
+                      <td colSpan="8">No sessions found</td>
+                    </tr>
+                  )}
+                </tbody>
               </table>
             </div>
           </div>
