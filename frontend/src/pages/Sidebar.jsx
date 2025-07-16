@@ -1,6 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import logo from '../assets/Sellerfly.png';
 import icon from '../assets/is-greater-than.png';
@@ -9,19 +9,30 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 const Sidebar = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const isSmallScreen = useMediaQuery({ maxWidth: 999 }); // 👈 screen < 1000px
+  const location = useLocation();
+  const isSmallScreen = useMediaQuery({ maxWidth: 999 });
 
-const handleLogout = () => {
-  if (window.confirm('Are you sure you want to logout?')) {
-    navigate('/logout');
-  }
-};
+  const [activeItem, setActiveItem] = useState('');
 
+  useEffect(() => {
+    // Automatically set active item based on URL path
+    if (location.pathname.includes('managerdashboard')) {
+      setActiveItem('projects');
+    } else if (location.pathname.includes('managerstatusview')) {
+      setActiveItem('status');
+    } else if (location.pathname.includes('userdashboard')) {
+      setActiveItem('tasks');
+    }
+  }, [location.pathname]);
 
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      navigate('/logout');
+    }
+  };
 
   return (
     <>
-      {/* Hamburger toggle only if small screen */}
       {isSmallScreen && (
         <button
           className="btn btn-light position-absolute top-0 start-0 m-2 z-1030 shadow"
@@ -34,7 +45,6 @@ const handleLogout = () => {
         </button>
       )}
 
-      {/* Static Sidebar for large screen */}
       {!isSmallScreen && (
         <div
           className="d-flex flex-column p-3 position-fixed"
@@ -46,11 +56,10 @@ const handleLogout = () => {
             left: 0,
           }}
         >
-          <SidebarContent handleLogout={handleLogout} user={user} />
+          <SidebarContent user={user} handleLogout={handleLogout} activeItem={activeItem} setActiveItem={setActiveItem} navigate={navigate} />
         </div>
       )}
 
-      {/* Offcanvas for mobile */}
       {isSmallScreen && (
         <div
           className="offcanvas offcanvas-start"
@@ -60,18 +69,11 @@ const handleLogout = () => {
           style={{ width: '220px' }}
         >
           <div className="offcanvas-header">
-            <h5 className="offcanvas-title" id="sidebarOffcanvasLabel">
-              Menu
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="offcanvas"
-              aria-label="Close"
-            />
+            <h5 className="offcanvas-title" id="sidebarOffcanvasLabel">Menu</h5>
+            <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" />
           </div>
           <div className="offcanvas-body p-0">
-            <SidebarContent handleLogout={handleLogout} user={user} />
+            <SidebarContent user={user} handleLogout={handleLogout} activeItem={activeItem} setActiveItem={setActiveItem} navigate={navigate} />
           </div>
         </div>
       )}
@@ -79,54 +81,66 @@ const handleLogout = () => {
   );
 };
 
-const SidebarContent = ({ user, handleLogout }) => (
-  <div className="d-flex flex-column h-100 px-3 pt-3">
-    <div className="text-center mb-4">
-      <img src={logo} alt="Logo" className="img-fluid" style={{ maxHeight: '70px' }} />
-    </div>
+const SidebarContent = ({ user, handleLogout, activeItem, setActiveItem, navigate }) => {
+  const handleItemClick = (item, path) => {
+    setActiveItem(item);
+    navigate(path);
+  };
 
-    <div className="flex-grow-1 text-center mt-5">
-      <ul className="nav flex-column w-100 mt-5">
-  {(user?.role === 'ADMIN' || user?.role === 'MANAGER') && (
-    <>
-      <li className="nav-item mb-3">
+  return (
+    <div className="d-flex flex-column h-100 px-3 pt-3">
+      <div className="text-center mb-4">
+        <img src={logo} alt="Logo" className="img-fluid" style={{ maxHeight: '70px' }} />
+      </div>
+
+      <div className="flex-grow-1 text-center mt-5">
+        <ul className="nav flex-column w-100 mt-5">
+          {(user?.role === 'ADMIN' || user?.role === 'MANAGER') && (
+            <>
+              <li className="nav-item mb-3">
+                <button
+                  className={`nav-link w-100 rounded ${activeItem === 'projects' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
+                  onClick={() => handleItemClick('projects', '/managerdashboard')}
+                >
+                  Projects
+                </button>
+              </li>
+              {user?.role === 'MANAGER' && (
+                <li className="nav-item mb-3">
+                  <button
+                    className={`nav-link w-100 rounded ${activeItem === 'status' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
+                    onClick={() => handleItemClick('status', '/managerstatusview')}
+                  >
+                    Status
+                  </button>
+                </li>
+              )}
+            </>
+          )}
+
+          {user?.role === 'USER' && (
+            <li className="nav-item mb-3">
+              <button
+                className="nav-link active bg-dark text-white rounded w-100"
+                disabled
+              >
+                Tasks
+              </button>
+            </li>
+          )}
+        </ul>
+      </div>
+
+      <div className="text-center mt-auto pb-3">
         <button
-          className="nav-link bg-dark text-white rounded w-100"
-          onClick={() => window.location.href = "/managerdashboard"}
+          className="btn btn-outline-danger d-flex align-items-center justify-content-center w-100"
+          onClick={handleLogout}
         >
-          Projects
+          Logout <img src={icon} alt="Logout Icon" className="ms-2" style={{ width: '16px' }} />
         </button>
-      </li>
-      {user?.role === 'MANAGER' && (
-        <li className="nav-item mb-3">
-          <button
-            className="nav-link bg-dark text-white rounded w-100"
-            onClick={() => window.location.href = "/managerstatusview"}
-          >
-            Status
-          </button>
-        </li>
-      )}
-    </>
-  )}
-  {user?.role === 'USER' && (
-    <li className="nav-item mb-3">
-      <span className="nav-link active bg-dark text-white rounded mt-5">Tasks</span>
-    </li>
-  )}
-</ul>
-
+      </div>
     </div>
-
-    <div className="text-center mt-auto pb-3">
-      <button
-        className="btn btn-outline-danger d-flex align-items-center justify-content-center w-100"
-        onClick={handleLogout}
-      >
-        Logout <img src={icon} alt="Logout Icon" className="ms-2" style={{ width: '16px' }} />
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 export default Sidebar;
