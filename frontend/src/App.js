@@ -7,6 +7,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ManagerDashboard from './pages/ManagerDashboard';
 import UserDashboard from './pages/UserDashboard';
 import ManagerStatus from './pages/ManagerStatus';
+import ManagerMonthlyStatus from './pages/ManagerMonthlyStatus';
 import Logout from './pages/Logout';
 
 function App() {
@@ -46,6 +47,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/managermonthlystatus"
+            element={
+              <ProtectedRoute allowedRoles={['MANAGER']}>
+                <ManagerMonthlyStatus />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/userdashboard"
             element={

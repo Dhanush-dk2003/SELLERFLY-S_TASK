@@ -15,11 +15,12 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState('');
 
   useEffect(() => {
-    // Automatically set active item based on URL path
     if (location.pathname.includes('managerdashboard')) {
       setActiveItem('projects');
     } else if (location.pathname.includes('managerstatusview')) {
       setActiveItem('status');
+    } else if (location.pathname.includes('managermonthlystatus')) {
+      setActiveItem('monthly');
     } else if (location.pathname.includes('userdashboard')) {
       setActiveItem('tasks');
     }
@@ -115,14 +116,24 @@ const SidebarContent = ({ user, handleLogout, activeItem, setActiveItem, navigat
                   </button>
                 </li>
               )}
+              {user?.role === 'MANAGER' && (
+                <li className="nav-item mb-3">
+                  <button
+                    className={`nav-link w-100 rounded ${activeItem === 'monthly' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
+                    onClick={() => handleItemClick('monthly', '/managermonthlystatus')}
+                  >
+                    Review
+                  </button>
+                </li>
+              )}
             </>
           )}
 
           {user?.role === 'USER' && (
             <li className="nav-item mb-3">
               <button
-                className="nav-link active bg-dark text-white rounded w-100"
-                disabled
+                className={`nav-link w-100 rounded ${activeItem === 'tasks' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
+                onClick={() => handleItemClick('tasks', '/userdashboard')}
               >
                 Tasks
               </button>

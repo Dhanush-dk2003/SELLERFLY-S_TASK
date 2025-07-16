@@ -22,7 +22,7 @@ const Logout = () => {
       setTimeout(() => {
         logout(); // ✅ call here after 10s
         navigate('/login', { replace: true });
-      }, 10000);
+      }, 5000);
     } catch (err) {
       console.error('Logout API error:', err);
     }

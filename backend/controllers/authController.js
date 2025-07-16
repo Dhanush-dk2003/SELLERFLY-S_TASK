@@ -193,3 +193,75 @@ export const getAllSessions = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch sessions" });
   }
 };
+export const getSessionsByDateRange = async (req, res) => {
+  try {
+    const { start, end } = req.query;
+
+    if (!start || !end) {
+      return res.status(400).json({ message: "Start and end dates are required" });
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    endDate.setHours(23, 59, 59, 999); // Include full day
+
+    const sessions = await prisma.userSession.findMany({
+      where: {
+        loginTime: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        loginTime: "asc",
+      },
+    });
+
+    // Aggregate per user per day
+    const dailyAggregates = {};
+
+    sessions.forEach((session) => {
+      const userId = session.user.id;
+      const dateKey = session.loginTime.toISOString().slice(0, 10); // yyyy-mm-dd
+
+      if (!dailyAggregates[`${userId}-${dateKey}`]) {
+        dailyAggregates[`${userId}-${dateKey}`] = {
+          user: session.user,
+          firstLogin: session.loginTime,
+          lastLogout: session.logoutTime || null,
+          totalHours: 0,
+        };
+      }
+
+      if (session.loginTime < dailyAggregates[`${userId}-${dateKey}`].firstLogin) {
+        dailyAggregates[`${userId}-${dateKey}`].firstLogin = session.loginTime;
+      }
+
+      if (
+        session.logoutTime &&
+        (!dailyAggregates[`${userId}-${dateKey}`].lastLogout ||
+          session.logoutTime > dailyAggregates[`${userId}-${dateKey}`].lastLogout)
+      ) {
+        dailyAggregates[`${userId}-${dateKey}`].lastLogout = session.logoutTime;
+      }
+
+      dailyAggregates[`${userId}-${dateKey}`].totalHours += session.totalDuration || 0;
+    });
+
+    res.status(200).json(Object.values(dailyAggregates));
+  } catch (err) {
+    console.error("Fetch range sessions error:", err.message);
+    res.status(500).json({ message: "Failed to fetch sessions in range" });
+  }
+};
+
+
