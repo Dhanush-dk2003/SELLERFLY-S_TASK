@@ -9,6 +9,9 @@ import UserDashboard from './pages/UserDashboard';
 import ManagerStatus from './pages/ManagerStatus';
 import ManagerMonthlyStatus from './pages/ManagerMonthlyStatus';
 import Logout from './pages/Logout';
+import InvoiceGenerator from './pages/InvoiceGenerator';
+
+
 
 function App() {
   return (
@@ -64,6 +67,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/invoice"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER']}>
+                <InvoiceGenerator />
+              </ProtectedRoute>
+            }
+          />
+
         </Routes>
       </AuthProvider>
     </BrowserRouter>

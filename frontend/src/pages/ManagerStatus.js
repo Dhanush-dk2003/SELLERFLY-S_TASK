@@ -44,6 +44,14 @@ const ManagerStatus = () => {
           hour12: true,
         });
   };
+  const formatHoursToHHMM = (decimalHours) => {
+  if (!decimalHours) return "—";
+  const hours = Math.floor(decimalHours);
+  const minutes = Math.round((decimalHours - hours) * 60);
+  return `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')}`;
+};
 
   return (
     <div className="d-flex flex-column flex-md-row">
@@ -84,11 +92,7 @@ const ManagerStatus = () => {
                       <td>{session.user.role}</td>
                       <td>{formatTime12Hour(session.firstLogin)}</td>
                       <td>{formatTime12Hour(session.lastLogout)}</td>
-                      <td>
-                        {session.totalHours
-                          ? session.totalHours.toFixed(2)
-                          : "—"}
-                      </td>
+                      <td>{session.totalHours ? formatHoursToHHMM(session.totalHours) : "—"}</td>
                       <td>
                         {session.isActive ? (
                           <span className="badge bg-success">Active</span>

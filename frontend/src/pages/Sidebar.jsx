@@ -1,10 +1,10 @@
-import { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useMediaQuery } from 'react-responsive';
-import logo from '../assets/Sellerfly.png';
-import icon from '../assets/is-greater-than.png';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { useContext, useState, useEffect } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
+import logo from "../assets/Sellerfly.png";
+import icon from "../assets/is-greater-than.png";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const Sidebar = () => {
   const { user } = useContext(AuthContext);
@@ -12,23 +12,26 @@ const Sidebar = () => {
   const location = useLocation();
   const isSmallScreen = useMediaQuery({ maxWidth: 999 });
 
-  const [activeItem, setActiveItem] = useState('');
+  const [activeItem, setActiveItem] = useState("");
 
-  useEffect(() => {
-    if (location.pathname.includes('managerdashboard')) {
-      setActiveItem('projects');
-    } else if (location.pathname.includes('managerstatusview')) {
-      setActiveItem('status');
-    } else if (location.pathname.includes('managermonthlystatus')) {
-      setActiveItem('monthly');
-    } else if (location.pathname.includes('userdashboard')) {
-      setActiveItem('tasks');
-    }
-  }, [location.pathname]);
+ useEffect(() => {
+  if (location.pathname.includes("managerdashboard")) {
+    setActiveItem("projects");
+  } else if (location.pathname.includes("managerstatusview")) {
+    setActiveItem("status");
+  } else if (location.pathname.includes("managermonthlystatus")) {
+    setActiveItem("monthly");
+  } else if (location.pathname.includes("invoice")) {
+    setActiveItem("invoice");
+  } else if (location.pathname.includes("userdashboard")) {
+    setActiveItem("tasks");
+  }
+}, [location.pathname]);
+
 
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      navigate('/logout');
+    if (window.confirm("Are you sure you want to logout?")) {
+      navigate("/logout");
     }
   };
 
@@ -50,14 +53,20 @@ const Sidebar = () => {
         <div
           className="d-flex flex-column p-3 position-fixed"
           style={{
-            width: '240px',
-            height: '100vh',
-            backgroundColor: '#dddedf',
+            width: "240px",
+            height: "100vh",
+            backgroundColor: "#dddedf",
             top: 0,
             left: 0,
           }}
         >
-          <SidebarContent user={user} handleLogout={handleLogout} activeItem={activeItem} setActiveItem={setActiveItem} navigate={navigate} />
+          <SidebarContent
+            user={user}
+            handleLogout={handleLogout}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            navigate={navigate}
+          />
         </div>
       )}
 
@@ -67,14 +76,27 @@ const Sidebar = () => {
           tabIndex="-1"
           id="sidebarOffcanvas"
           aria-labelledby="sidebarOffcanvasLabel"
-          style={{ width: '220px' }}
+          style={{ width: "220px" }}
         >
           <div className="offcanvas-header">
-            <h5 className="offcanvas-title" id="sidebarOffcanvasLabel">Menu</h5>
-            <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" />
+            <h5 className="offcanvas-title" id="sidebarOffcanvasLabel">
+              Menu
+            </h5>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            />
           </div>
           <div className="offcanvas-body p-0">
-            <SidebarContent user={user} handleLogout={handleLogout} activeItem={activeItem} setActiveItem={setActiveItem} navigate={navigate} />
+            <SidebarContent
+              user={user}
+              handleLogout={handleLogout}
+              activeItem={activeItem}
+              setActiveItem={setActiveItem}
+              navigate={navigate}
+            />
           </div>
         </div>
       )}
@@ -82,7 +104,13 @@ const Sidebar = () => {
   );
 };
 
-const SidebarContent = ({ user, handleLogout, activeItem, setActiveItem, navigate }) => {
+const SidebarContent = ({
+  user,
+  handleLogout,
+  activeItem,
+  setActiveItem,
+  navigate,
+}) => {
   const handleItemClick = (item, path) => {
     setActiveItem(item);
     navigate(path);
@@ -91,49 +119,90 @@ const SidebarContent = ({ user, handleLogout, activeItem, setActiveItem, navigat
   return (
     <div className="d-flex flex-column h-100 px-3 pt-3">
       <div className="text-center mb-4">
-        <img src={logo} alt="Logo" className="img-fluid" style={{ maxHeight: '70px' }} />
+        <img
+          src={logo}
+          alt="Logo"
+          className="img-fluid"
+          style={{ maxHeight: "70px" }}
+        />
       </div>
 
       <div className="flex-grow-1 text-center mt-5">
         <ul className="nav flex-column w-100 mt-5">
-          {(user?.role === 'ADMIN' || user?.role === 'MANAGER') && (
+          {(user?.role === "ADMIN" || user?.role === "MANAGER") && (
             <>
               <li className="nav-item mb-3">
                 <button
-                  className={`nav-link w-100 rounded ${activeItem === 'projects' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
-                  onClick={() => handleItemClick('projects', '/managerdashboard')}
+                  className={`nav-link w-100 rounded ${
+                    activeItem === "projects"
+                      ? "bg-dark text-white fw-bold"
+                      : "bg-light text-dark"
+                  }`}
+                  onClick={() =>
+                    handleItemClick("projects", "/managerdashboard")
+                  }
                 >
                   Projects
                 </button>
               </li>
-              {user?.role === 'MANAGER' && (
+              {user?.role === "MANAGER" && (
                 <li className="nav-item mb-3">
                   <button
-                    className={`nav-link w-100 rounded ${activeItem === 'status' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
-                    onClick={() => handleItemClick('status', '/managerstatusview')}
+                    className={`nav-link w-100 rounded ${
+                      activeItem === "status"
+                        ? "bg-dark text-white fw-bold"
+                        : "bg-light text-dark"
+                    }`}
+                    onClick={() =>
+                      handleItemClick("status", "/managerstatusview")
+                    }
                   >
                     Status
                   </button>
                 </li>
               )}
-              {user?.role === 'MANAGER' && (
+              {user?.role === "MANAGER" && (
                 <li className="nav-item mb-3">
                   <button
-                    className={`nav-link w-100 rounded ${activeItem === 'monthly' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
-                    onClick={() => handleItemClick('monthly', '/managermonthlystatus')}
+                    className={`nav-link w-100 rounded ${
+                      activeItem === "monthly"
+                        ? "bg-dark text-white fw-bold"
+                        : "bg-light text-dark"
+                    }`}
+                    onClick={() =>
+                      handleItemClick("monthly", "/managermonthlystatus")
+                    }
                   >
                     Review
+                  </button>
+                </li>
+              )}
+              {(user?.role === "ADMIN" || user?.role === "MANAGER") && (
+                <li className="nav-item mb-3">
+                  <button
+                    className={`nav-link w-100 rounded ${
+                      activeItem === "invoice"
+                        ? "bg-dark text-white fw-bold"
+                        : "bg-light text-dark"
+                    }`}
+                    onClick={() => handleItemClick("invoice", "/invoice")}
+                  >
+                    Invoice Generator
                   </button>
                 </li>
               )}
             </>
           )}
 
-          {user?.role === 'USER' && (
+          {user?.role === "USER" && (
             <li className="nav-item mb-3">
               <button
-                className={`nav-link w-100 rounded ${activeItem === 'tasks' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
-                onClick={() => handleItemClick('tasks', '/userdashboard')}
+                className={`nav-link w-100 rounded ${
+                  activeItem === "tasks"
+                    ? "bg-dark text-white fw-bold"
+                    : "bg-light text-dark"
+                }`}
+                onClick={() => handleItemClick("tasks", "/userdashboard")}
               >
                 Tasks
               </button>
@@ -147,7 +216,13 @@ const SidebarContent = ({ user, handleLogout, activeItem, setActiveItem, navigat
           className="btn btn-outline-danger d-flex align-items-center justify-content-center w-100"
           onClick={handleLogout}
         >
-          Logout <img src={icon} alt="Logout Icon" className="ms-2" style={{ width: '16px' }} />
+          Logout{" "}
+          <img
+            src={icon}
+            alt="Logout Icon"
+            className="ms-2"
+            style={{ width: "16px" }}
+          />
         </button>
       </div>
     </div>
