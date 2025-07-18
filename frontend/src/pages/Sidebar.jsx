@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import logo from "../assets/Sellerfly.png";
 import icon from "../assets/is-greater-than.png";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 
 const Sidebar = () => {
   const { user } = useContext(AuthContext);
@@ -17,10 +17,9 @@ const Sidebar = () => {
  useEffect(() => {
   if (location.pathname.includes("managerdashboard")) {
     setActiveItem("projects");
-  } else if (location.pathname.includes("managerstatusview")) {
-    setActiveItem("status");
-  } else if (location.pathname.includes("managermonthlystatus")) {
-    setActiveItem("monthly");
+  } else if (location.pathname.includes("managerreview")) {
+    setActiveItem("review");
+  
   } else if (location.pathname.includes("invoice")) {
     setActiveItem("invoice");
   } else if (location.pathname.includes("userdashboard")) {
@@ -149,34 +148,19 @@ const SidebarContent = ({
                 <li className="nav-item mb-3">
                   <button
                     className={`nav-link w-100 rounded ${
-                      activeItem === "status"
+                      activeItem === "review"
                         ? "bg-dark text-white fw-bold"
                         : "bg-light text-dark"
                     }`}
                     onClick={() =>
-                      handleItemClick("status", "/managerstatusview")
+                      handleItemClick("review", "/managerreview")
                     }
                   >
                     Status
                   </button>
                 </li>
               )}
-              {user?.role === "MANAGER" && (
-                <li className="nav-item mb-3">
-                  <button
-                    className={`nav-link w-100 rounded ${
-                      activeItem === "monthly"
-                        ? "bg-dark text-white fw-bold"
-                        : "bg-light text-dark"
-                    }`}
-                    onClick={() =>
-                      handleItemClick("monthly", "/managermonthlystatus")
-                    }
-                  >
-                    Review
-                  </button>
-                </li>
-              )}
+              
               {(user?.role === "ADMIN" || user?.role === "MANAGER") && (
                 <li className="nav-item mb-3">
                   <button
@@ -187,7 +171,7 @@ const SidebarContent = ({
                     }`}
                     onClick={() => handleItemClick("invoice", "/invoice")}
                   >
-                    Invoice Generator
+                    Invoice
                   </button>
                 </li>
               )}

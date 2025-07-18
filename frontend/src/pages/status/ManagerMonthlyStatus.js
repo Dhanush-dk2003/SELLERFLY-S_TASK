@@ -1,27 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
-import Sidebar from "./Sidebar";
-import API from "../axios";
-import { AuthContext } from "../contexts/AuthContext";
-import { useMediaQuery } from "react-responsive";
+import React, { useState, useEffect } from "react";
+import API from "../../axios";
 
 const ManagerMonthlyStatus = () => {
-  const { user } = useContext(AuthContext);
   const [userSessions, setUserSessions] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const isLargeScreen = useMediaQuery({ minWidth: 992 });
-
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        // Only fetch if both dates are selected
         if (!startDate || !endDate) {
           setUserSessions([]);
           return;
         }
-
         const res = await API.get(`/auth/sessions/range?start=${startDate}&end=${endDate}`);
         setUserSessions(res.data);
       } catch (err) {
@@ -50,33 +42,26 @@ const ManagerMonthlyStatus = () => {
           hour12: true,
         });
   };
-  const formatHoursToHHMM = (decimalHours) => {
-  if (!decimalHours) return "—";
-  const hours = Math.floor(decimalHours);
-  const minutes = Math.round((decimalHours - hours) * 60);
-  return `${hours.toString().padStart(2, '0')}:${minutes
-    .toString()
-    .padStart(2, '0')}`;
-};
 
-  // Filter sessions by name on frontend
+  const formatHoursToHHMM = (decimalHours) => {
+    if (!decimalHours) return "—";
+    const hours = Math.floor(decimalHours);
+    const minutes = Math.round((decimalHours - hours) * 60);
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}`;
+  };
+
   const filteredSessions = userSessions.filter((s) =>
     s.user.name.toLowerCase().includes(searchName.toLowerCase())
   );
 
   return (
     <div className="d-flex flex-column flex-md-row">
-      <Sidebar />
+     
       <div
-        className="flex-grow-1 px-3 py-4"
-        style={{
-          marginLeft: isLargeScreen ? "250px" : "0",
-          marginRight: isLargeScreen ? "50px" : "0",
-        }}
-      >
+        className="flex-grow-1 px-3 py-4">
         <div className="container-fluid">
-          <h1 className="mb-4 mt-4">{user?.name || "Manager"}'s Review</h1>
-
           <div className="d-flex flex-column flex-md-row gap-2 mb-3">
             <input
               type="text"
@@ -125,7 +110,6 @@ const ManagerMonthlyStatus = () => {
                       <td>{formatTime12Hour(session.firstLogin)}</td>
                       <td>{formatTime12Hour(session.lastLogout)}</td>
                       <td>{session.totalHours ? formatHoursToHHMM(session.totalHours) : "—"}</td>
-
                     </tr>
                   ))}
                   {filteredSessions.length === 0 && (

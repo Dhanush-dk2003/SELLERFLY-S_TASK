@@ -6,8 +6,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/AdminDashboard';
 import ManagerDashboard from './pages/ManagerDashboard';
 import UserDashboard from './pages/UserDashboard';
-import ManagerStatus from './pages/ManagerStatus';
-import ManagerMonthlyStatus from './pages/ManagerMonthlyStatus';
+import ManagerReview from './pages/status/ManagerReview';
+import ManagerStatus from './pages/status/ManagerStatus';
+import ManagerMonthlyStatus from './pages/status/ManagerMonthlyStatus';
 import Logout from './pages/Logout';
 import InvoiceGenerator from './pages/InvoiceGenerator';
 
@@ -39,6 +40,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['MANAGER']}>
                 <ManagerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/managerreview"
+            element={
+              <ProtectedRoute allowedRoles={['MANAGER']}>
+                <ManagerReview />
               </ProtectedRoute>
             }
           />
