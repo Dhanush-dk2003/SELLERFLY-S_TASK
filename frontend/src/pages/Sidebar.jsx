@@ -17,7 +17,12 @@ const Sidebar = () => {
  useEffect(() => {
   if (location.pathname.includes("managerdashboard")) {
     setActiveItem("projects");
-  } else if (location.pathname.includes("managerreview")) {
+    
+  } 
+  else if(location.pathname.includes("admindashboard")){
+    setActiveItem("projects")
+  }
+  else if (location.pathname.includes("managerreview")) {
     setActiveItem("review");
   
   } else if (location.pathname.includes("invoice")) {
@@ -138,7 +143,7 @@ const SidebarContent = ({
                       : "bg-light text-dark"
                   }`}
                   onClick={() =>
-                    handleItemClick("projects", "/managerdashboard")
+                    handleItemClick("projects", user?.role === "ADMIN" ? "/admindashboard" : "/managerdashboard")
                   }
                 >
                   Projects
