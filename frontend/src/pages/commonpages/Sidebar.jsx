@@ -153,7 +153,7 @@ const SidebarContent = ({
                 <li className="nav-item mb-3">
                   <button
                     className={`nav-link w-100 rounded ${
-                      activeItem === "review"
+                      activeItem === "status"
                         ? "bg-dark text-white fw-bold"
                         : "bg-light text-dark"
                     }`}
