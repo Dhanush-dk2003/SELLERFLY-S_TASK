@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
-import Sidebar from "./Sidebar";
-import API from "../axios";
-import { AuthContext } from "../contexts/AuthContext";
+import Sidebar from "../commonpages/Sidebar";
+import API from "../../axios";
+import { AuthContext } from "../../contexts/AuthContext";
 import { useMediaQuery } from 'react-responsive';
 
 

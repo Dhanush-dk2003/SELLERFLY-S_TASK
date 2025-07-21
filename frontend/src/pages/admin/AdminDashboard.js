@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import Sidebar from "./Sidebar";
-import API from "../axios";
-import { AuthContext } from "../contexts/AuthContext";
+import Sidebar from "../commonpages/Sidebar";
+import API from "../../axios";
+import { AuthContext } from "../../contexts/AuthContext";
 import { useMediaQuery } from 'react-responsive';
-import Snackbar from "../components/Snackbar"; // Assuming you have a Snackbar component
+import Snackbar from "../../components/Snackbar"; // Assuming you have a Snackbar component
 
 const AdminDashboard = () => {
   const { user } = useContext(AuthContext);

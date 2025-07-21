@@ -1,9 +1,9 @@
 import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import logo from "../assets/Sellerfly.png";
-import icon from "../assets/is-greater-than.png";
+import logo from "../../assets/Sellerfly.png";
+import icon from "../../assets/is-greater-than.png";
 
 
 const Sidebar = () => {
@@ -22,8 +22,8 @@ const Sidebar = () => {
   else if(location.pathname.includes("admindashboard")){
     setActiveItem("projects")
   }
-  else if (location.pathname.includes("managerreview")) {
-    setActiveItem("review");
+  else if (location.pathname.includes("managerstatus")) {
+    setActiveItem("status");
   
   } else if (location.pathname.includes("invoice")) {
     setActiveItem("invoice");
@@ -158,7 +158,7 @@ const SidebarContent = ({
                         : "bg-light text-dark"
                     }`}
                     onClick={() =>
-                      handleItemClick("review", "/managerreview")
+                      handleItemClick("status", "/managerstatus")
                     }
                   >
                     Status

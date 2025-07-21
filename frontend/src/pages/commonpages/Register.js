@@ -1,5 +1,5 @@
 import { useState } from "react";
-import API from "../axios";
+import API from "../../axios";
 import { useNavigate, Link } from "react-router-dom";
 import { FaUser, FaEnvelope, FaLock, FaUserShield } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";

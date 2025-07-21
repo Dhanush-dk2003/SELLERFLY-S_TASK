@@ -1,16 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from './pages/commonpages/Login';
+import Register from './pages/commonpages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminDashboard from './pages/AdminDashboard';
-import ManagerDashboard from './pages/ManagerDashboard';
-import UserDashboard from './pages/UserDashboard';
-import ManagerReview from './pages/status/ManagerReview';
-import ManagerStatus from './pages/status/ManagerStatus';
-import ManagerMonthlyStatus from './pages/status/ManagerMonthlyStatus';
-import Logout from './pages/Logout';
-import InvoiceGenerator from './pages/InvoiceGenerator';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import ManagerDashboard from './pages/manager/ManagerDashboard';
+import UserDashboard from './pages/user/UserDashboard';
+import ManagerStatus from './pages/manager/ManagerStatus';
+import ManagerDailyStatus from './pages/manager/ManagerDailyStatus';
+import ManagerMonthlyStatus from './pages/manager/ManagerMonthlyStatus';
+import Logout from './pages/commonpages/Logout';
+import InvoiceGenerator from './pages/admin/InvoiceGenerator';
 
 
 
@@ -19,8 +19,6 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-        <Route path="*" element={<Navigate to="/login" />} />
-
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
@@ -44,18 +42,18 @@ function App() {
             }
           />
           <Route
-            path="/managerreview"
+            path="/managerstatus"
             element={
               <ProtectedRoute allowedRoles={['MANAGER']}>
-                <ManagerReview />
+                <ManagerStatus />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/managerstatusview"
+            path="/managerdailystatus"
             element={
               <ProtectedRoute allowedRoles={['MANAGER']}>
-                <ManagerStatus />
+                <ManagerDailyStatus />
               </ProtectedRoute>
             }
           />
@@ -84,6 +82,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<Navigate to="/login" />} />
 
         </Routes>
       </AuthProvider>

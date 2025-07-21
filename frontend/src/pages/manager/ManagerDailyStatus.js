@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import API from "../../axios";
 
 
-const ManagerStatus = () => {
+const ManagerDailyStatus = () => {
   const [userSessions, setUserSessions] = useState([]);
 
   useEffect(() => {
@@ -106,4 +106,4 @@ const ManagerStatus = () => {
   );
 };
 
-export default ManagerStatus;
+export default ManagerDailyStatus;

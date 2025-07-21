@@ -1,11 +1,11 @@
 import React, { useState,useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
-import Sidebar from '../Sidebar';
-import ManagerStatus from './ManagerStatus';
+import Sidebar from '../commonpages/Sidebar';
+import ManagerDailyStatus from './ManagerDailyStatus';
 import ManagerMonthlyStatus from './ManagerMonthlyStatus';
 import { useMediaQuery } from 'react-responsive';
 
-const ManagerReview = () => {
+const ManagerStatus = () => {
   const [activeTab, setActiveTab] = useState('daily');
   const isLargeScreen = useMediaQuery({ minWidth: 992 });
     const { user } = useContext(AuthContext);
@@ -39,7 +39,7 @@ const ManagerReview = () => {
           </div>
 
           <div>
-            {activeTab === 'daily' ? <ManagerStatus /> : <ManagerMonthlyStatus />}
+            {activeTab === 'daily' ? <ManagerDailyStatus /> : <ManagerMonthlyStatus />}
           </div>
         </div>
       </div>
@@ -47,4 +47,4 @@ const ManagerReview = () => {
   );
 };
 
-export default ManagerReview;
+export default ManagerStatus;

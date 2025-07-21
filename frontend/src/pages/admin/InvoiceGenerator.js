@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import Sidebar from './Sidebar';
+import Sidebar from '../commonpages/Sidebar';
 import { useMediaQuery } from 'react-responsive';
 
 
