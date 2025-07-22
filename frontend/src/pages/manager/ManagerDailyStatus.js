@@ -65,7 +65,6 @@ const ManagerDailyStatus = () => {
                     <th>S.No</th>
                     <th>Date</th>
                     <th>Name</th>
-                    <th>Role</th>
                     <th>Login Time</th>
                     <th>Logout Time</th>
                     <th>Worked Hours</th>
@@ -78,7 +77,6 @@ const ManagerDailyStatus = () => {
                       <td>{i + 1}</td>
                       <td>{formatDate(session.firstLogin)}</td>
                       <td>{session.user.name}</td>
-                      <td>{session.user.role}</td>
                       <td>{formatTime12Hour(session.firstLogin)}</td>
                       <td>{formatTime12Hour(session.lastLogout)}</td>
                       <td>{session.totalHours ? formatHoursToHHMM(session.totalHours) : "—"}</td>

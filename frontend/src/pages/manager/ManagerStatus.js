@@ -21,7 +21,7 @@ const ManagerStatus = () => {
         }}
       >
         <div className="container-fluid">
-          <h1 className="mb-4 mt-4">{user?.name || "Manager"}'s Dashboard</h1>
+          <h1 className="mb-4 mt-4">{user?.name || "Manager"}'s Review</h1>
 
           <div className="d-flex flex-column flex-sm-row gap-3 mb-4">
             <button
