@@ -5,6 +5,7 @@ import prisma from "../prisma/client.js";
 export const getMessages = async (req, res) => {
   try {
     const userEmail = req.user.email;
+
     const messages = await prisma.permissionRequest.findMany({
       where: {
         OR: [
@@ -19,9 +20,11 @@ export const getMessages = async (req, res) => {
       orderBy: { createdAt: "desc" },
     });
 
+    // ✅ Make sure to include 'to' as an array so frontend can check it
     const result = messages.map((msg) => ({
       id: msg.id,
       from: msg.requestedBy.email,
+      to: [msg.toEmail], // ✅ wrap toEmail as array for compatibility
       content: msg.reason,
       timeRange: `${msg.startTime} - ${msg.endTime}`,
       status: msg.status,
@@ -76,9 +79,14 @@ export const deleteMessage = async (req, res) => {
 };
 
 // @PATCH /api/messages/:id/status
+
 export const updateMessageStatus = async (req, res) => {
   try {
     const { status } = req.body;
+    console.log("🔁 Updating message ID:", req.params.id);
+console.log("New status:", status);
+console.log("Responder:", req.user.email);
+
 
     const updated = await prisma.permissionRequest.update({
       where: { id: Number(req.params.id) },
@@ -95,3 +103,4 @@ export const updateMessageStatus = async (req, res) => {
     res.status(500).json({ error: "Failed to update message status" });
   }
 };
+

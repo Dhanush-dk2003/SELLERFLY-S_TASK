@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Snackbar from "../../../components/Snackbar";
+import { AuthContext } from "../../../contexts/AuthContext";
 import MessageCard from "./MessageCard";
 import ComposeMessage from "./ComposeMessage";
 import Sidebar from "../Sidebar";
@@ -22,6 +23,8 @@ const MessagePage = () => {
     type: "success",
   });
   const isLargeScreen = useMediaQuery({ minWidth: 992 });
+  const { user } = useContext(AuthContext);
+  const currentUserEmail = user?.email;
 
   const showSnackbar = (message, type = "success") => {
     setSnackbar({ show: true, message, type });
@@ -62,16 +65,17 @@ const MessagePage = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
+    console.log("🚀 Updating message", id, "to status", newStatus); 
     try {
       await updateMessageStatus(id, newStatus);
       setMessages(
         messages.map((msg) =>
-          msg._id === id ? { ...msg, status: newStatus } : msg
+          msg.id === id ? { ...msg, status: newStatus } : msg
         )
       );
       showSnackbar(
-        `Message ${newStatus}`,
-        newStatus === "Accepted" ? "success" : "warning"
+        `Message ${newStatus === "ACCEPTED" ? "accepted" : "denied"}`,
+        newStatus === "ACCEPTED" ? "success" : "warning"
       );
     } catch {
       showSnackbar("Failed to update message", "error");
@@ -110,6 +114,7 @@ const MessagePage = () => {
             <MessageCard
               key={msg.id}
               message={msg}
+              currentUserEmail={currentUserEmail}
               onDelete={() => handleDelete(msg.id)}
               onStatusChange={(status) => handleStatusChange(msg.id, status)}
             />
