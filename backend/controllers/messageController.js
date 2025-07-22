@@ -6,19 +6,26 @@ export const getMessages = async (req, res) => {
   try {
     const userEmail = req.user.email;
 
-    const messages = await prisma.permissionRequest.findMany({
-      where: {
-        OR: [
-          { toEmail: userEmail },
-          { requestedBy: { email: userEmail } }
-        ]
+const messages = await prisma.permissionRequest.findMany({
+  where: {
+    OR: [
+      {
+        toEmail: userEmail,
+        receiverDeleted: false
       },
-      include: {
-        requestedBy: true,
-        respondedBy: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+      {
+        requestedBy: { email: userEmail },
+        senderDeleted: false
+      }
+    ]
+  },
+  include: {
+    requestedBy: true,
+    respondedBy: true,
+  },
+  orderBy: { createdAt: "desc" },
+});
+
 
     // ✅ Make sure to include 'to' as an array so frontend can check it
     const result = messages.map((msg) => ({
@@ -67,16 +74,33 @@ export const createMessage = async (req, res) => {
 
 // @DELETE /api/messages/:id
 export const deleteMessage = async (req, res) => {
-  try {
-    await prisma.permissionRequest.delete({
-      where: { id: Number(req.params.id) },
-    });
-    res.json({ success: true });
-  } catch (error) {
-    console.error("Delete message error:", error);
-    res.status(500).json({ error: "Failed to delete message" });
-  }
+  const userEmail = req.user.email;
+
+  const msg = await prisma.permissionRequest.findUnique({
+    where: { id: parseInt(req.params.id) },
+    include: { requestedBy: true },
+  });
+
+  if (!msg) return res.status(404).json({ error: "Message not found" });
+
+  // Decide which side is deleting
+  const isSender = msg.requestedBy.email === userEmail;
+  const isReceiver = msg.toEmail === userEmail;
+
+  if (!isSender && !isReceiver)
+    return res.status(403).json({ error: "Not authorized to delete this message" });
+
+  const updated = await prisma.permissionRequest.update({
+    where: { id: msg.id },
+    data: {
+      senderDeleted: isSender ? true : msg.senderDeleted,
+      receiverDeleted: isReceiver ? true : msg.receiverDeleted,
+    },
+  });
+
+  res.json({ success: true });
 };
+
 
 // @PATCH /api/messages/:id/status
 
