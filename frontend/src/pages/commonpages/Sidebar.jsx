@@ -30,6 +30,9 @@ const Sidebar = () => {
   } else if (location.pathname.includes("userdashboard")) {
     setActiveItem("tasks");
   }
+  else if (location.pathname.includes("message")) {
+    setActiveItem("message");
+  }
 }, [location.pathname]);
 
 
@@ -165,6 +168,7 @@ const SidebarContent = ({
                   </button>
                 </li>
               )}
+
               
               {(user?.role === "ADMIN" || user?.role === "MANAGER") && (
                 <li className="nav-item mb-3">
@@ -182,6 +186,18 @@ const SidebarContent = ({
               )}
             </>
           )}
+          <li className="nav-item mb-3">
+    <button
+      className={`nav-link w-100 rounded ${
+        activeItem === "message"
+          ? "bg-dark text-white fw-bold"
+          : "bg-light text-dark"
+      }`}
+      onClick={() => handleItemClick("message", "/message")}
+    >
+      Message
+    </button>
+  </li>
 
           {user?.role === "USER" && (
             <li className="nav-item mb-3">
@@ -199,6 +215,7 @@ const SidebarContent = ({
           )}
         </ul>
       </div>
+      
 
       <div className="text-center mt-auto pb-3">
         <button

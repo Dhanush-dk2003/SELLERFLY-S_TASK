@@ -28,9 +28,14 @@ model User {
   projects  Project[]     @relation("UserProjects")
   tasks     Task[]
   sessions  UserSession[]
+  
+  permissionRequestsSent     PermissionRequest[] @relation("SentRequests")
+  permissionRequestsHandled   PermissionRequest[] @relation("HandledRequests")
+
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
+
 
 model UserSession {
   id            Int       @id @default(autoincrement())
@@ -63,4 +68,24 @@ model Task {
   updatedAt DateTime @updatedAt
 
   @@unique([title, projectId]) // ✅ add this at the bottom of the model
+}
+
+model PermissionRequest {
+  id             Int      @id @default(autoincrement())
+
+  requestedBy    User     @relation("SentRequests", fields: [requestedById], references: [id])
+  requestedById  Int
+
+  toEmail        String
+  reason         String
+  startTime      DateTime
+  endTime        DateTime
+  status         String   @default("PENDING")
+
+  respondedBy    User?    @relation("HandledRequests", fields: [respondedById], references: [id])
+  respondedById  Int?
+
+  responseMessage String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

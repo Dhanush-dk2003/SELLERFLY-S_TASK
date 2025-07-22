@@ -11,6 +11,7 @@ import ManagerDailyStatus from './pages/manager/ManagerDailyStatus';
 import ManagerMonthlyStatus from './pages/manager/ManagerMonthlyStatus';
 import Logout from './pages/commonpages/Logout';
 import InvoiceGenerator from './pages/admin/InvoiceGenerator';
+import MessagePage from './pages/commonpages/message/MessagePage';
 
 
 
@@ -82,6 +83,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/message"
+            element={
+              <ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MANAGER']}>
+                <MessagePage />
+              </ProtectedRoute>
+            }
+          />  
           <Route path="*" element={<Navigate to="/login" />} />
 
         </Routes>
