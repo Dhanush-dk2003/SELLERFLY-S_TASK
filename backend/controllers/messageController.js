@@ -65,6 +65,7 @@ export const createMessage = async (req, res) => {
   res.status(201).json({
     id: requests[0].id,
     from: req.user.email,
+    to: to,
     content,
     timeRange: `${startTime} - ${endTime}`,
     status: "PENDING",
