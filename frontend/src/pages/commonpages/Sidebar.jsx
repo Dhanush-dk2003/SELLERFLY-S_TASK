@@ -4,6 +4,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import logo from "../../assets/Sellerfly.png";
 import icon from "../../assets/is-greater-than.png";
+import { MessageStatusContext } from "../../contexts/MessageStatusContext";
+
+
+
 
 
 const Sidebar = () => {
@@ -13,6 +17,8 @@ const Sidebar = () => {
   const isSmallScreen = useMediaQuery({ maxWidth: 999 });
 
   const [activeItem, setActiveItem] = useState("");
+  // Define hasPendingMessageDot (replace with your actual logic)
+  const { hasPendingMessageDot } = useContext(MessageStatusContext);
 
  useEffect(() => {
   if (location.pathname.includes("managerdashboard")) {
@@ -73,6 +79,7 @@ const Sidebar = () => {
             activeItem={activeItem}
             setActiveItem={setActiveItem}
             navigate={navigate}
+            hasPendingMessageDot={hasPendingMessageDot}
           />
         </div>
       )}
@@ -117,6 +124,7 @@ const SidebarContent = ({
   activeItem,
   setActiveItem,
   navigate,
+  hasPendingMessageDot,
 }) => {
   const handleItemClick = (item, path) => {
     setActiveItem(item);
@@ -186,18 +194,7 @@ const SidebarContent = ({
               )}
             </>
           )}
-          <li className="nav-item mb-3">
-    <button
-      className={`nav-link w-100 rounded ${
-        activeItem === "message"
-          ? "bg-dark text-white fw-bold"
-          : "bg-light text-dark"
-      }`}
-      onClick={() => handleItemClick("message", "/message")}
-    >
-      Message
-    </button>
-  </li>
+          
 
           {user?.role === "USER" && (
             <li className="nav-item mb-3">
@@ -213,6 +210,25 @@ const SidebarContent = ({
               </button>
             </li>
           )}
+          <li className="nav-item mb-3 position-relative">
+  <button
+    className={`nav-link w-100 rounded ${
+      activeItem === "message"
+        ? "bg-dark text-white fw-bold"
+        : "bg-light text-dark"
+    }`}
+    onClick={() => handleItemClick("message", "/message")}
+  >
+    Message
+    {hasPendingMessageDot && (
+      <span
+        className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+        style={{ width: "10px", height: "10px" }}
+      ></span>
+    )}
+  </button>
+</li>
+
         </ul>
       </div>
       

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 const Snackbar = ({ message, show, onClose, type = "success" }) => {
   useEffect(() => {
     if (show) {
-      const timer = setTimeout(onClose, 3000);
+      const timer = setTimeout(onClose, 5000);
       return () => clearTimeout(timer);
     }
   }, [show, onClose]);

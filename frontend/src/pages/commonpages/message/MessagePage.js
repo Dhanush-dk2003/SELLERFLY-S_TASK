@@ -6,6 +6,7 @@ import ComposeMessage from "./ComposeMessage";
 import Sidebar from "../Sidebar";
 import { useMediaQuery } from "react-responsive";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   fetchInboxMessages,
   sendMessage,
@@ -16,7 +17,7 @@ import {
 const MessagePage = () => {
   const [showCompose, setShowCompose] = useState(false);
   const [messages, setMessages] = useState([]); // Start empty, no sample data
-
+const navigate = useNavigate();
   const [snackbar, setSnackbar] = useState({
     show: false,
     message: "",
@@ -40,11 +41,16 @@ const MessagePage = () => {
     };
     loadMessages();
   }, []);
+  
+
   const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete the message?")) {
+      navigate("/message");
+    }
     try {
       await deleteMessage(id);
       setMessages(messages.filter((msg) => msg.id !== id));
-      showSnackbar("Message deleted", "success");
+      showSnackbar("Message deleted", "warning");
     } catch (err) {
       showSnackbar("Failed to delete message", "error");
     }
@@ -61,7 +67,11 @@ const MessagePage = () => {
     }
   };
   const handleCancel = () => {
+    if (window.confirm("Are you sure you want to cancel the compose?")) {
+      navigate("/message");
+    }
     setShowCompose(false);
+    showSnackbar("Message composition cancelled", "warning");
   };
 
   const handleStatusChange = async (id, newStatus) => {
@@ -81,10 +91,16 @@ const MessagePage = () => {
       showSnackbar("Failed to update message", "error");
     }
   };
+  const hasPendingMessageDot = messages.some(
+  (msg) =>
+    (msg.status === "PENDING" ) ||
+    (msg.status === undefined )
+);
+
 
   return (
     <div className="d-flex flex-column flex-md-row">
-      <Sidebar />
+      <Sidebar hasPendingMessageDot={hasPendingMessageDot} />
       <div
         className="flex-grow-1 px-3 py-4 mb-4 mt-4"
         style={{

@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/commonpages/Login';
 import Register from './pages/commonpages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -12,20 +11,29 @@ import ManagerMonthlyStatus from './pages/manager/ManagerMonthlyStatus';
 import Logout from './pages/commonpages/Logout';
 import InvoiceGenerator from './pages/admin/InvoiceGenerator';
 import MessagePage from './pages/commonpages/message/MessagePage';
-
-
+import Snackbar from "./components/Snackbar";
+import { MessageStatusContext } from "./contexts/MessageStatusContext"; // ✅ Make sure this is imported
+import React, { useContext } from "react";
 
 function App() {
+  const { snackbarData } = useContext(MessageStatusContext); // ✅ now it works
+
   return (
     <BrowserRouter>
-      <AuthProvider>
+      
+        {/* Snackbar shows on top for all routes */}
+        <Snackbar
+          message={snackbarData.message}
+          show={snackbarData.show}
+          type={snackbarData.type}
+          onClose={() => {}}
+        />
         <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
+          {/* All routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Role-based protected routes */}
           <Route
             path="/admindashboard"
             element={
@@ -66,7 +74,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/userdashboard"
             element={
@@ -90,11 +97,10 @@ function App() {
                 <MessagePage />
               </ProtectedRoute>
             }
-          />  
+          />
           <Route path="*" element={<Navigate to="/login" />} />
-
         </Routes>
-      </AuthProvider>
+      
     </BrowserRouter>
   );
 }
