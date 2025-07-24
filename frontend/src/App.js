@@ -14,6 +14,8 @@ import MessagePage from './pages/commonpages/message/MessagePage';
 import Snackbar from "./components/Snackbar";
 import { MessageStatusContext } from "./contexts/MessageStatusContext"; // ✅ Make sure this is imported
 import React, { useContext } from "react";
+import Profilepage from './pages/admin/profile/Profilepage'; // ✅ Import the Profilepage component
+
 
 function App() {
   const { snackbarData } = useContext(MessageStatusContext); // ✅ now it works
@@ -87,6 +89,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER']}>
                 <InvoiceGenerator />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN', 'MANAGER', 'USER']}>
+                <Profilepage />
               </ProtectedRoute>
             }
           />

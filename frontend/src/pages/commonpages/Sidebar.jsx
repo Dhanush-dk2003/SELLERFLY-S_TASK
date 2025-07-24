@@ -6,10 +6,6 @@ import logo from "../../assets/Sellerfly.png";
 import icon from "../../assets/is-greater-than.png";
 import { MessageStatusContext } from "../../contexts/MessageStatusContext";
 
-
-
-
-
 const Sidebar = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -20,27 +16,23 @@ const Sidebar = () => {
   // Define hasPendingMessageDot (replace with your actual logic)
   const { hasPendingMessageDot } = useContext(MessageStatusContext);
 
- useEffect(() => {
-  if (location.pathname.includes("managerdashboard")) {
-    setActiveItem("projects");
-    
-  } 
-  else if(location.pathname.includes("admindashboard")){
-    setActiveItem("projects")
-  }
-  else if (location.pathname.includes("managerstatus")) {
-    setActiveItem("status");
-  
-  } else if (location.pathname.includes("invoice")) {
-    setActiveItem("invoice");
-  } else if (location.pathname.includes("userdashboard")) {
-    setActiveItem("tasks");
-  }
-  else if (location.pathname.includes("message")) {
-    setActiveItem("message");
-  }
-}, [location.pathname]);
-
+  useEffect(() => {
+    if (location.pathname.includes("managerdashboard")) {
+      setActiveItem("projects");
+    } else if (location.pathname.includes("admindashboard")) {
+      setActiveItem("projects");
+    } else if (location.pathname.includes("managerstatus")) {
+      setActiveItem("status");
+    } else if (location.pathname.includes("invoice")) {
+      setActiveItem("invoice");
+    } else if (location.pathname.includes("profile")) {
+      setActiveItem("profile");
+    } else if (location.pathname.includes("userdashboard")) {
+      setActiveItem("tasks");
+    } else if (location.pathname.includes("message")) {
+      setActiveItem("message");
+    }
+  }, [location.pathname]);
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
@@ -154,7 +146,12 @@ const SidebarContent = ({
                       : "bg-light text-dark"
                   }`}
                   onClick={() =>
-                    handleItemClick("projects", user?.role === "ADMIN" ? "/admindashboard" : "/managerdashboard")
+                    handleItemClick(
+                      "projects",
+                      user?.role === "ADMIN"
+                        ? "/admindashboard"
+                        : "/managerdashboard"
+                    )
                   }
                 >
                   Projects
@@ -168,17 +165,14 @@ const SidebarContent = ({
                         ? "bg-dark text-white fw-bold"
                         : "bg-light text-dark"
                     }`}
-                    onClick={() =>
-                      handleItemClick("status", "/managerstatus")
-                    }
+                    onClick={() => handleItemClick("status", "/managerstatus")}
                   >
                     Status
                   </button>
                 </li>
               )}
 
-              
-              {(user?.role === "ADMIN" || user?.role === "MANAGER") && (
+              {user?.role === "ADMIN" && (
                 <li className="nav-item mb-3">
                   <button
                     className={`nav-link w-100 rounded ${
@@ -192,9 +186,22 @@ const SidebarContent = ({
                   </button>
                 </li>
               )}
+              {user?.role === "ADMIN" && (
+                <li className="nav-item mb-3">
+                  <button
+                    className={`nav-link w-100 rounded ${
+                      activeItem === "profile"
+                        ? "bg-dark text-white fw-bold"
+                        : "bg-light text-dark"
+                    }`}
+                    onClick={() => handleItemClick("profile", "/profile")}
+                  >
+                    Profile
+                  </button>
+                </li>
+              )}
             </>
           )}
-          
 
           {user?.role === "USER" && (
             <li className="nav-item mb-3">
@@ -211,27 +218,25 @@ const SidebarContent = ({
             </li>
           )}
           <li className="nav-item mb-3 position-relative">
-  <button
-    className={`nav-link w-100 rounded ${
-      activeItem === "message"
-        ? "bg-dark text-white fw-bold"
-        : "bg-light text-dark"
-    }`}
-    onClick={() => handleItemClick("message", "/message")}
-  >
-    Message
-    {hasPendingMessageDot && (
-      <span
-        className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
-        style={{ width: "10px", height: "10px" }}
-      ></span>
-    )}
-  </button>
-</li>
-
+            <button
+              className={`nav-link w-100 rounded ${
+                activeItem === "message"
+                  ? "bg-dark text-white fw-bold"
+                  : "bg-light text-dark"
+              }`}
+              onClick={() => handleItemClick("message", "/message")}
+            >
+              Message
+              {hasPendingMessageDot && (
+                <span
+                  className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+                  style={{ width: "10px", height: "10px" }}
+                ></span>
+              )}
+            </button>
+          </li>
         </ul>
       </div>
-      
 
       <div className="text-center mt-auto pb-3">
         <button
