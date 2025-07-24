@@ -23,7 +23,6 @@ const CreateProfileForm = () => {
     ifscCode: "",
     profilePic: null,
   });
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,10 +64,16 @@ const CreateProfileForm = () => {
                       <img
                         src={URL.createObjectURL(formData.profilePic)}
                         alt="Profile"
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
                       />
                     ) : (
-                      <span style={{ color: "#6c757d", fontSize: "14px" }}>Upload Image</span>
+                      <span style={{ color: "#6c757d", fontSize: "14px" }}>
+                        Upload Image
+                      </span>
                     )}
                   </div>
                 </label>
@@ -90,23 +95,47 @@ const CreateProfileForm = () => {
                 <div className="row">
                   <div className="col-md-4 mb-3">
                     <label>Employee ID</label>
-                    <input type="text" className="form-control" value="SKSY001" readOnly />
+                    <input
+                      type="text"
+                      className="form-control"
+                      value="SKSY001"
+                      readOnly
+                    />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>First Name</label>
-                    <input type="text" className="form-control" name="firstName" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="firstName"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Last Name</label>
-                    <input type="text" className="form-control" name="lastName" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="lastName"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Date of Birth</label>
-                    <input type="date" className="form-control" name="dob" onChange={handleChange} />
+                    <input
+                      type="date"
+                      className="form-control"
+                      name="dob"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Gender</label>
-                    <select className="form-control" name="gender" onChange={handleChange}>
+                    <select
+                      className="form-control"
+                      name="gender"
+                      onChange={handleChange}
+                    >
                       <option value="">Select</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -115,11 +144,21 @@ const CreateProfileForm = () => {
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Blood Group</label>
-                    <input type="text" className="form-control" name="bloodGroup" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="bloodGroup"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Date of Joining</label>
-                    <input type="date" className="form-control" name="joiningDate" onChange={handleChange} />
+                    <input
+                      type="date"
+                      className="form-control"
+                      name="joiningDate"
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
               </div>
@@ -130,23 +169,48 @@ const CreateProfileForm = () => {
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label>Phone Number</label>
-                    <input type="text" className="form-control" name="phoneNumber" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="phoneNumber"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label>Emergency Number</label>
-                    <input type="text" className="form-control" name="emergencyNumber" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="emergencyNumber"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label>Official Email ID</label>
-                    <input type="email" className="form-control" name="officialEmail" onChange={handleChange} />
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="officialEmail"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label>Personal Email ID</label>
-                    <input type="email" className="form-control" name="personalEmail" onChange={handleChange} />
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="personalEmail"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-12 mb-3">
                     <label>Address</label>
-                    <textarea className="form-control" name="address" rows="5" onChange={handleChange}></textarea>
+                    <textarea
+                      className="form-control"
+                      name="address"
+                      rows="4"
+                      onChange={handleChange}
+                    ></textarea>
                   </div>
                 </div>
               </div>
@@ -157,29 +221,53 @@ const CreateProfileForm = () => {
                 <div className="row">
                   <div className="col-md-4 mb-3">
                     <label>Role</label>
-                    <select className="form-control" name="role" onChange={handleChange}>
+                    <select
+                      className="form-control"
+                      name="role"
+                      onChange={handleChange}
+                    >
                       <option value="">Select</option>
-                      <option value="Admin">Admin</option>
-                      <option value="Manager">Manager</option>
-                      <option value="Employee">Employee</option>
+                      <option value="ADMIN">Admin</option>
+                      <option value="MANAGER">Manager</option>
+                      <option value="EMPLOYEE">Employee</option>
                     </select>
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Department</label>
-                    <select className="form-control" name="department" onChange={handleChange}>
+                    <select
+                      className="form-control"
+                      name="department"
+                      onChange={handleChange}
+                    >
                       <option value="">Select</option>
-                      <option value="Sales">Sales</option>
-                      <option value="Development">Development</option>
-                      <option value="HR">HR</option>
+                      <option value="REGISTRATION TEAM">Registration Team</option>
+                      <option value="KEY ACC MANAGEMENT">Key Account Management</option>
+                      <option value="GROWTH MANAGEMENT">Growth Management</option>
+                      <option value="DIGITAL MARKETING">Digital Marketing</option>
+                      <option value="WEB DEVELOPMENT">Web Development</option>
+                      <option value="TELE CALLING TEAM">Tele Calling Team</option>
+                      <option value="MANAGEMENT">Management</option>
+
+                      
                     </select>
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Designation</label>
-                    <input type="text" className="form-control" name="designation" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="designation"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Salary</label>
-                    <input type="text" className="form-control" name="salary" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="salary"
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
               </div>
@@ -190,15 +278,30 @@ const CreateProfileForm = () => {
                 <div className="row">
                   <div className="col-md-4 mb-3">
                     <label>Bank Name</label>
-                    <input type="text" className="form-control" name="bankName" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="bankName"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>Account Number</label>
-                    <input type="text" className="form-control" name="accountNumber" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="accountNumber"
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label>IFSC Code</label>
-                    <input type="text" className="form-control" name="ifscCode" onChange={handleChange} />
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="ifscCode"
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
               </div>
