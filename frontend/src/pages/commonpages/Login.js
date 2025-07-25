@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { FaLock, FaEnvelope } from "react-icons/fa";
+import logo from "../../assets/Sellerfly.png";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -54,8 +55,16 @@ const Login = () => {
   }, []);
 
   return (
+  <>
+  <div className="position-absolute top-0 start-0 p-5">
+    <img src={logo} alt="Logo" style={{ height: "80px" }} />
+  </div>
+
+  
     <div className="container d-flex justify-content-center align-items-center min-vh-100 min-vw-100 bg-body-secondary">
       <div className="p-4 bg-white rounded-4 shadow-sm w-100 mx-3" style={{ maxWidth: "400px" }}>
+      
+
         <h4 className="text-center text-primary fw-bold mb-4">Welcome Back</h4>
         {error && <div className="alert alert-danger text-center py-2 px-3">{error}</div>}
         <form onSubmit={handleSubmit} noValidate>
@@ -97,6 +106,7 @@ const Login = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

@@ -171,21 +171,6 @@ const SidebarContent = ({
                   </button>
                 </li>
               )}
-
-              {user?.role === "ADMIN" && (
-                <li className="nav-item mb-3">
-                  <button
-                    className={`nav-link w-100 rounded ${
-                      activeItem === "invoice"
-                        ? "bg-dark text-white fw-bold"
-                        : "bg-light text-dark"
-                    }`}
-                    onClick={() => handleItemClick("invoice", "/invoice")}
-                  >
-                    Invoice
-                  </button>
-                </li>
-              )}
               {user?.role === "ADMIN" && (
                 <li className="nav-item mb-3">
                   <button
@@ -202,6 +187,22 @@ const SidebarContent = ({
               )}
             </>
           )}
+
+              {user?.role === "ADMIN" && (
+                <li className="nav-item mb-3">
+                  <button
+                    className={`nav-link w-100 rounded ${
+                      activeItem === "invoice"
+                        ? "bg-dark text-white fw-bold"
+                        : "bg-light text-dark"
+                    }`}
+                    onClick={() => handleItemClick("invoice", "/invoice")}
+                  >
+                    Invoice
+                  </button>
+                </li>
+              )}
+              
 
           {user?.role === "USER" && (
             <li className="nav-item mb-3">

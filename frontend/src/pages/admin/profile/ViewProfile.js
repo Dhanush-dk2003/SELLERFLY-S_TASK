@@ -7,7 +7,6 @@ const ViewProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [newProfilePic, setNewProfilePic] = useState(null);
 
-
   const handleSearch = async () => {
     try {
       const res = await API.get(`/profile/${searchId}`);
@@ -25,45 +24,44 @@ const ViewProfile = () => {
 
   const handleEdit = () => setIsEditing(true);
   const handleSave = async () => {
-  try {
-    const formData = new FormData();
-    Object.entries(profile).forEach(([key, value]) => {
-      if (value !== null) formData.append(key, value);
-    });
+    try {
+      const formData = new FormData();
+      Object.entries(profile).forEach(([key, value]) => {
+        if (value !== null) formData.append(key, value);
+      });
 
-    if (newProfilePic) {
-      formData.append("profilePic", newProfilePic);
+      if (newProfilePic) {
+        formData.append("profilePic", newProfilePic);
+      }
+
+      await API.put(`/profile/${profile.employeeId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert("Profile updated successfully!");
+      setIsEditing(false);
+      setNewProfilePic(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update profile");
     }
-
-    await API.put(`/profile/${profile.employeeId}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    alert("Profile updated successfully!");
-    setIsEditing(false);
-    setNewProfilePic(null);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update profile");
-  }
-};
-
+  };
 
   const handleDelete = async () => {
-  if (!window.confirm("Are you sure you want to delete this profile?")) return;
+    if (!window.confirm("Are you sure you want to delete this profile?"))
+      return;
 
-  try {
-    await API.delete(`/api/profile/${profile.employeeId}`);
-    alert("Profile deleted successfully!");
-    setProfile(null);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to delete profile");
-  }
-};
-
+    try {
+      await API.delete(`/profile/${profile.employeeId}`);
+      alert("Profile deleted successfully!");
+      setProfile(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete profile");
+    }
+  };
 
   return (
     <div className="d-flex">
@@ -112,69 +110,88 @@ const ViewProfile = () => {
                         backgroundColor: "#f8f9fa",
                       }}
                     >
-                        {isEditing ? (
-  <>
-    <label htmlFor="editProfilePic">
-      <div
-        className="rounded-circle border border-secondary mb-2 d-flex align-items-center justify-content-center"
-        style={{
-          width: "150px",
-          height: "150px",
-          overflow: "hidden",
-          backgroundColor: "#f8f9fa",
-          cursor: "pointer",
-        }}
-      >
-        {newProfilePic ? (
-          <img
-            src={URL.createObjectURL(newProfilePic)}
-            alt="New"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ) : profile.profilePic ? (
-          <img
-            src={`http://localhost:5000/uploads/${profile.profilePic}`}
-            alt="Current"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        ) : (
-          <span style={{ color: "#6c757d", fontSize: "14px" }}>Upload Image</span>
-        )}
-      </div>
-    </label>
-    <input
-      type="file"
-      id="editProfilePic"
-      accept="image/*"
-      className="form-control mt-2"
-      style={{ display: "none" }}
-      onChange={(e) => setNewProfilePic(e.target.files[0])}
-    />
-  </>
-) : (
-  <div
-    className="rounded-circle border border-secondary mb-2 d-flex align-items-center justify-content-center"
-    style={{
-      width: "150px",
-      height: "150px",
-      overflow: "hidden",
-      backgroundColor: "#f8f9fa",
-    }}
-  >
-    {profile.profilePic ? (
-      <img
-        src={`http://localhost:5000/uploads/${profile.profilePic}`}
-        alt="Profile"
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-      />
-    ) : (
-      <span style={{ color: "#6c757d", fontSize: "14px" }}>No Image</span>
-    )}
-  </div>
-)}
-
-                      
-                      
+                      {isEditing ? (
+                        <>
+                          <label htmlFor="editProfilePic">
+                            <div
+                              className="rounded-circle border border-secondary mb-2 d-flex align-items-center justify-content-center"
+                              style={{
+                                width: "150px",
+                                height: "150px",
+                                overflow: "hidden",
+                                backgroundColor: "#f8f9fa",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {newProfilePic ? (
+                                <img
+                                  src={URL.createObjectURL(newProfilePic)}
+                                  alt="New"
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              ) : profile.profilePic ? (
+                                <img
+                                  src={`http://localhost:5000/uploads/${profile.profilePic}`}
+                                  alt="Current"
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              ) : (
+                                <span
+                                  style={{ color: "#6c757d", fontSize: "14px" }}
+                                >
+                                  Upload Image
+                                </span>
+                              )}
+                            </div>
+                          </label>
+                          <input
+                            type="file"
+                            id="editProfilePic"
+                            accept="image/*"
+                            className="form-control mt-2"
+                            style={{ display: "none" }}
+                            onChange={(e) =>
+                              setNewProfilePic(e.target.files[0])
+                            }
+                          />
+                        </>
+                      ) : (
+                        <div
+                          className="rounded-circle border border-secondary mb-2 d-flex align-items-center justify-content-center"
+                          style={{
+                            width: "150px",
+                            height: "150px",
+                            overflow: "hidden",
+                            backgroundColor: "#f8f9fa",
+                          }}
+                        >
+                          {profile.profilePic ? (
+                            <img
+                              src={`http://localhost:5000/uploads/${profile.profilePic}`}
+                              alt="Profile"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          ) : (
+                            <span
+                              style={{ color: "#6c757d", fontSize: "14px" }}
+                            >
+                              No Image
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -190,7 +207,8 @@ const ViewProfile = () => {
                           type="text"
                           className="form-control"
                           value={profile.employeeId}
-                          readOnly
+                          onChange={handleChange}
+                          disabled={!isEditing}
                         />
                       </div>
                       <div className="col-md-4 mb-3">
@@ -342,9 +360,9 @@ const ViewProfile = () => {
                           disabled={!isEditing}
                         >
                           <option value="">Select</option>
-                      <option value="ADMIN">Admin</option>
-                      <option value="MANAGER">Manager</option>
-                      <option value="EMPLOYEE">Employee</option>
+                          <option value="ADMIN">Admin</option>
+                          <option value="MANAGER">Manager</option>
+                          <option value="EMPLOYEE">Employee</option>
                         </select>
                       </div>
                       <div className="col-md-4 mb-3">
@@ -357,13 +375,25 @@ const ViewProfile = () => {
                           disabled={!isEditing}
                         >
                           <option value="">Select</option>
-                      <option value="REGISTRATION TEAM">Registration Team</option>
-                      <option value="KEY ACC MANAGEMENT">Key Account Management</option>
-                      <option value="GROWTH MANAGEMENT">Growth Management</option>
-                      <option value="DIGITAL MARKETING">Digital Marketing</option>
-                      <option value="WEB DEVELOPMENT">Web Development</option>
-                      <option value="TELE CALLING TEAM">Tele Calling Team</option>
-                      <option value="MANAGEMENT">Management</option>
+                          <option value="REGISTRATION TEAM">
+                            Registration Team
+                          </option>
+                          <option value="KEY ACC MANAGEMENT">
+                            Key Account Management
+                          </option>
+                          <option value="GROWTH MANAGEMENT">
+                            Growth Management
+                          </option>
+                          <option value="DIGITAL MARKETING">
+                            Digital Marketing
+                          </option>
+                          <option value="WEB DEVELOPMENT">
+                            Web Development
+                          </option>
+                          <option value="TELE CALLING TEAM">
+                            Tele Calling Team
+                          </option>
+                          <option value="MANAGEMENT">Management</option>
                         </select>
                       </div>
                       <div className="col-md-4 mb-3">

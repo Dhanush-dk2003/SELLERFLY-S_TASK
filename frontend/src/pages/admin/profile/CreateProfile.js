@@ -131,7 +131,7 @@ const CreateProfileForm = () => {
                       type="text"
                       className="form-control"
                       value={formData.employeeId}
-                      readOnly
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-md-4 mb-3">

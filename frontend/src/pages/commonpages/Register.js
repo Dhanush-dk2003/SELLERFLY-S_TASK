@@ -1,13 +1,12 @@
 import { useState } from "react";
 import API from "../../axios";
 import { useNavigate, Link } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock, FaIdBadge } from "react-icons/fa";
-import "bootstrap/dist/css/bootstrap.min.css";
+import {  FaEnvelope, FaLock, FaIdBadge } from "react-icons/fa";
+import logo from "../../assets/Sellerfly.png";
 
 const Register = () => {
   const [formData, setFormData] = useState({
     employeeId: "",
-    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -67,8 +66,13 @@ const Register = () => {
   };
 
   return (
+    <>
+      <div className="position-absolute top-0 start-0 p-5">
+        <img src={logo} alt="Logo" style={{ height: "80px" }} />
+      </div>
     <div className="container d-flex justify-content-center align-items-center min-vh-100 min-vw-100 bg-body-secondary">
       <div className="p-4 bg-white rounded-4 shadow-sm w-100 mx-3" style={{ maxWidth: "400px" }}>
+      
         <h4 className="text-center text-success fw-bold mb-4">Create Account</h4>
         {error && <div className="alert alert-danger text-center py-2 px-3">{error}</div>}
         <form onSubmit={handleSubmit} noValidate>
@@ -86,7 +90,7 @@ const Register = () => {
             {validation.employeeId && <small className="text-danger">{validation.employeeId}</small>}
           </div>
 
-          <div className="mb-3">
+          {/* <div className="mb-3">
             <label className="form-label">Name</label>
             <div className="input-group">
               <span className="input-group-text"><FaUser /></span>
@@ -98,7 +102,7 @@ const Register = () => {
               />
             </div>
             {validation.name && <small className="text-danger">{validation.name}</small>}
-          </div>
+          </div> */}
 
           <div className="mb-3">
             <label className="form-label">Email</label>
@@ -153,6 +157,7 @@ const Register = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 
