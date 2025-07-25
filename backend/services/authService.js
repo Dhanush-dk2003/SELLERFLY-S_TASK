@@ -4,52 +4,35 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const register = async (email, password, name, role) => {
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
-    throw new Error('User already exists with this email');
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = await prisma.user.create({
-    data: {
-      email,
-      name,
-      password: hashedPassword,
-      role
+export const login = async (emailOrId, password) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { officialEmail: emailOrId },
+        { employeeId: emailOrId }
+      ]
     }
   });
 
-  return user;
-};
-export const login = async (email, password) => {
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    throw new Error('Invalid email or password');
+  // Check user existence and password presence
+  if (!user || !user.password) {
+    throw new Error('User not found or password not set yet');
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    throw new Error('Invalid email or password');
-  }
+  if (!isMatch) throw new Error('Invalid credentials');
 
-  // Create JWT token
   const token = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-      role: user.role
-    },
+    { id: user.id, employeeId: user.employeeId, email: user.email, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: '1d' }
   );
-  // Create a new session
+
   await prisma.userSession.create({
     data: {
       userId: user.id,
-      loginTime: new Date(),
-    },
+      loginTime: new Date()
+    }
   });
 
   return { token, user };

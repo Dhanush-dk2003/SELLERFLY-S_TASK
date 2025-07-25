@@ -1,38 +1,67 @@
-import { register } from "../services/authService.js";
+
 import { login } from "../services/authService.js";
 import prisma from "../prisma/client.js";
+import bcrypt from 'bcrypt';
 
 export const registerUser = async (req, res) => {
   try {
-    const { email, password, name, role } = req.body;
+    const { employeeId, email, password, confirmPassword } = req.body;
 
-    if (!email || !password || !name || !role) {
+    if (!employeeId || !email || !password || !confirmPassword) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const user = await register(email, password, name, role);
-    res
-      .status(201)
-      .json({
-        message: "User registered successfully",
-        user: { id: user.id, email: user.email, role: user.role },
-      });
-  } catch (err) {
-    console.error("Registration error:", err.message);
-    res.status(500).json({ message: err.message || "Internal server error" });
-  }
-};
-export const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const { token, user } = await login(email, password);
+    // Look for user created by admin
+    const existingUser = await prisma.user.findFirst({
+  where: {
+    OR: [
+      { officialEmail: email },
+      { employeeId: employeeId }
+    ],
+  },
+});
+
+
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found. Contact Admin." });
+    }
+
+    if (existingUser.password) {
+      return res.status(400).json({ message: "Password already set. Please login." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await prisma.user.update({
+      where: { id: existingUser.id },
+      data: { password: hashedPassword },
+    });
+
+    res.status(200).json({ message: "Password set successfully. You can now login." });
+
+  } catch (err) {
+    console.error("Registration error:", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+export const loginUser = async (req, res) => {
+  try {
+    const { emailOrId, password } = req.body;
+
+    if (!emailOrId || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email/ID and password are required" });
+    }
+
+    const { token, user } = await login(emailOrId, password);
 
     // Create session only if not already today
     const todayStart = new Date();
@@ -67,8 +96,9 @@ export const loginUser = async (req, res) => {
       message: "Login successful",
       user: {
         id: user.id,
-        email: user.email,
-        name: user.name,
+        officialEmail: user.officialEmail,
+        employeeId: user.employeeId,
+        name: `${user.firstName} ${user.lastName}`,
         role: user.role,
       },
     });

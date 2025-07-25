@@ -3,11 +3,10 @@ generator client {
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  directUrl  = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
-
 
 enum Role {
   ADMIN
@@ -22,22 +21,39 @@ enum Status {
 }
 
 model User {
-  id        Int           @id @default(autoincrement())
-  name      String
-  email     String        @unique
-  password  String
-  role      Role          @default(USER)
-  projects  Project[]     @relation("UserProjects")
-  tasks     Task[]
-  sessions  UserSession[]
-  
-  permissionRequestsSent     PermissionRequest[] @relation("SentRequests")
-  permissionRequestsHandled   PermissionRequest[] @relation("HandledRequests")
+  id              Int      @id @default(autoincrement())
+  employeeId      String   @unique
+  firstName       String
+  lastName        String
+  dob             DateTime
+  gender          String
+  bloodGroup      String?
+  joiningDate     DateTime
+  phoneNumber     String
+  emergencyNumber String
+  officialEmail   String   @unique
+  personalEmail   String?
+  address         String?
+  role            Role     @default(USER)
+  department      String?
+  designation     String?
+  salary          String?
+  bankName        String?
+  accountNumber   String?
+  ifscCode        String?
+  profilePic      String? // This will be a URL or filename
+  password        String? // Optional — null if not set
 
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  projects Project[]     @relation("UserProjects")
+  tasks    Task[]
+  sessions UserSession[]
+
+  permissionRequestsSent    PermissionRequest[] @relation("SentRequests")
+  permissionRequestsHandled PermissionRequest[] @relation("HandledRequests")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
 
 model UserSession {
   id            Int       @id @default(autoincrement())
@@ -73,27 +89,26 @@ model Task {
 }
 
 model PermissionRequest {
-  id             Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  requestedBy    User     @relation("SentRequests", fields: [requestedById], references: [id])
-  requestedById  Int
+  requestedBy   User @relation("SentRequests", fields: [requestedById], references: [id])
+  requestedById Int
 
-  toEmail        String
-  reason         String
-  startTime      DateTime
-  endTime        DateTime
-  status         String   @default("PENDING")
+  toEmail   String
+  reason    String
+  startTime DateTime
+  endTime   DateTime
+  status    String   @default("PENDING")
 
-  respondedBy    User?    @relation("HandledRequests", fields: [respondedById], references: [id])
-  respondedById  Int?
+  respondedBy   User? @relation("HandledRequests", fields: [respondedById], references: [id])
+  respondedById Int?
 
   responseMessage String?
 
   // 🆕 Add these two flags
-  senderDeleted   Boolean  @default(false)
-  receiverDeleted Boolean  @default(false)
+  senderDeleted   Boolean @default(false)
+  receiverDeleted Boolean @default(false)
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-

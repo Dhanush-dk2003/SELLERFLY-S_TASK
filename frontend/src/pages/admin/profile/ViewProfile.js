@@ -1,15 +1,18 @@
 import React, { useState } from "react";
+import API from "axios";
 
 const ViewProfile = () => {
   const [searchId, setSearchId] = useState("");
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleSearch = () => {
-    if (searchId === "SKSY001") {
-      setProfile();
-    } else {
+  const handleSearch = async () => {
+    try {
+      const res = await API.get(`/api/profile/${searchId}`);
+      setProfile(res.data);
+    } catch (err) {
       setProfile(null);
+      alert("Profile not found");
     }
   };
 
@@ -19,8 +22,30 @@ const ViewProfile = () => {
   };
 
   const handleEdit = () => setIsEditing(true);
-  const handleSave = () => setIsEditing(false);
-  const handleDelete = () => setProfile(null);
+  const handleSave = async () => {
+  try {
+    await API.put(`/api/profile/${profile.employeeId}`, profile);
+    alert("Profile updated successfully!");
+    setIsEditing(false);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update profile");
+  }
+};
+
+  const handleDelete = async () => {
+  if (!window.confirm("Are you sure you want to delete this profile?")) return;
+
+  try {
+    await API.delete(`/api/profile/${profile.employeeId}`);
+    alert("Profile deleted successfully!");
+    setProfile(null);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to delete profile");
+  }
+};
+
 
   return (
     <div className="d-flex">

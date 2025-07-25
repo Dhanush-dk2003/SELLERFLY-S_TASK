@@ -1,31 +1,51 @@
 import { useState } from "react";
 import API from "../../axios";
 import { useNavigate, Link } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock, FaUserShield } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaIdBadge } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "USER" });
+  const [formData, setFormData] = useState({
+    employeeId: "",
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const [error, setError] = useState("");
-  const [validation, setValidation] = useState({ name: "", email: "", password: "" });
+  const [validation, setValidation] = useState({});
   const navigate = useNavigate();
 
   const validate = () => {
     let isValid = true;
-    const val = { name: "", email: "", password: "" };
+    const val = {};
+
+    if (!formData.employeeId.trim()) {
+      val.employeeId = "Employee ID is required";
+      isValid = false;
+    }
     if (!formData.name.trim()) {
       val.name = "Name is required";
       isValid = false;
     }
+
     const emailRegex = /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.(com|in|org|io)$/;
     if (!emailRegex.test(formData.email)) {
       val.email = "Enter a valid email with a proper domain";
       isValid = false;
     }
+
     if (formData.password.length < 6) {
       val.password = "Password must be at least 6 characters";
       isValid = false;
     }
+
+    if (formData.password !== formData.confirmPassword) {
+      val.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+
     setValidation(val);
     return isValid;
   };
@@ -52,6 +72,20 @@ const Register = () => {
         <h4 className="text-center text-success fw-bold mb-4">Create Account</h4>
         {error && <div className="alert alert-danger text-center py-2 px-3">{error}</div>}
         <form onSubmit={handleSubmit} noValidate>
+          <div className="mb-3">
+            <label className="form-label">Employee ID</label>
+            <div className="input-group">
+              <span className="input-group-text"><FaIdBadge /></span>
+              <input
+                name="employeeId"
+                className={`form-control ${validation.employeeId ? "is-invalid" : ""}`}
+                placeholder="Employee ID"
+                onChange={handleChange}
+              />
+            </div>
+            {validation.employeeId && <small className="text-danger">{validation.employeeId}</small>}
+          </div>
+
           <div className="mb-3">
             <label className="form-label">Name</label>
             <div className="input-group">
@@ -97,15 +131,18 @@ const Register = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Role</label>
+            <label className="form-label">Confirm Password</label>
             <div className="input-group">
-              <span className="input-group-text"><FaUserShield /></span>
-              <select name="role" className="form-select" onChange={handleChange}>
-                <option value="USER">User</option>
-                <option value="MANAGER">Manager</option>
-                <option value="ADMIN">Admin</option>
-              </select>
+              <span className="input-group-text"><FaLock /></span>
+              <input
+                name="confirmPassword"
+                type="password"
+                className={`form-control ${validation.confirmPassword ? "is-invalid" : ""}`}
+                placeholder="Confirm Password"
+                onChange={handleChange}
+              />
             </div>
+            {validation.confirmPassword && <small className="text-danger">{validation.confirmPassword}</small>}
           </div>
 
           <button type="submit" className="btn btn-success w-100 rounded-4 fw-semibold">Register</button>

@@ -1,8 +1,10 @@
 // CreateProfileForm.js
 import React, { useState } from "react";
+import { useEffect } from "react";
 
 const CreateProfileForm = () => {
   const [formData, setFormData] = useState({
+    employeeId: "",
     firstName: "",
     lastName: "",
     dob: "",
@@ -23,6 +25,15 @@ const CreateProfileForm = () => {
     ifscCode: "",
     profilePic: null,
   });
+  useEffect(() => {
+  const fetchNextId = async () => {
+   const res = await fetch('http://localhost:5000/api/users/next-id');
+    const data = await res.json();
+    setFormData((prev) => ({ ...prev, employeeId: data.nextId }));
+  };
+
+  fetchNextId();
+}, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,11 +44,32 @@ const CreateProfileForm = () => {
     setFormData((prev) => ({ ...prev, profilePic: e.target.files[0] }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-    // Submit logic here
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const form = new FormData();
+  for (const key in formData) {
+    form.append(key, formData[key]);
+  }
+
+  try {
+    const response = await fetch('http://localhost:5000/api/users/create', {
+      method: 'POST',
+      body: form,
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert('Profile created successfully!');
+      // Optional: reset formData or redirect
+    } else {
+      alert(result.message || 'Error occurred');
+    }
+  } catch (err) {
+    alert('Failed to submit: ' + err.message);
+  }
+};
+
 
   return (
     <div className="container py-4">
@@ -98,7 +130,7 @@ const CreateProfileForm = () => {
                     <input
                       type="text"
                       className="form-control"
-                      value="SKSY001"
+                      value={formData.employeeId}
                       readOnly
                     />
                   </div>
@@ -229,7 +261,7 @@ const CreateProfileForm = () => {
                       <option value="">Select</option>
                       <option value="ADMIN">Admin</option>
                       <option value="MANAGER">Manager</option>
-                      <option value="EMPLOYEE">Employee</option>
+                      <option value="USER">User</option>
                     </select>
                   </div>
                   <div className="col-md-4 mb-3">

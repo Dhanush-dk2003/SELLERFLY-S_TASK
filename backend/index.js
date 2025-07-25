@@ -10,6 +10,8 @@ import projectRoutes from './routes/projectRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import apiLimiter from './middleware/rateLimiter.js';
 import messageRoutes from "./routes/messageRoutes.js";
+import userRoutes from './routes/userRoutes.js';
+
 
 
 
@@ -32,6 +34,9 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth/login', apiLimiter);
 app.use("/api/messages", messageRoutes);
+app.use('/api/users', userRoutes);
+app.use('/uploads', express.static('uploads'));
+
 
 
 
