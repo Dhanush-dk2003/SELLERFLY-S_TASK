@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import API from "axios";
+import API from "../../../axios";
 
 const ViewProfile = () => {
   const [searchId, setSearchId] = useState("");
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [newProfilePic, setNewProfilePic] = useState(null);
+
 
   const handleSearch = async () => {
     try {
-      const res = await API.get(`/api/profile/${searchId}`);
+      const res = await API.get(`/profile/${searchId}`);
       setProfile(res.data);
     } catch (err) {
       setProfile(null);
@@ -24,14 +26,30 @@ const ViewProfile = () => {
   const handleEdit = () => setIsEditing(true);
   const handleSave = async () => {
   try {
-    await API.put(`/api/profile/${profile.employeeId}`, profile);
+    const formData = new FormData();
+    Object.entries(profile).forEach(([key, value]) => {
+      if (value !== null) formData.append(key, value);
+    });
+
+    if (newProfilePic) {
+      formData.append("profilePic", newProfilePic);
+    }
+
+    await API.put(`/profile/${profile.employeeId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     alert("Profile updated successfully!");
     setIsEditing(false);
+    setNewProfilePic(null);
   } catch (err) {
     console.error(err);
     alert("Failed to update profile");
   }
 };
+
 
   const handleDelete = async () => {
   if (!window.confirm("Are you sure you want to delete this profile?")) return;
@@ -94,21 +112,69 @@ const ViewProfile = () => {
                         backgroundColor: "#f8f9fa",
                       }}
                     >
-                      {profile.profilePic ? (
-                        <img
-                          src={profile.profilePic}
-                          alt="Profile"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <span style={{ color: "#6c757d", fontSize: "14px" }}>
-                          No Image
-                        </span>
-                      )}
+                        {isEditing ? (
+  <>
+    <label htmlFor="editProfilePic">
+      <div
+        className="rounded-circle border border-secondary mb-2 d-flex align-items-center justify-content-center"
+        style={{
+          width: "150px",
+          height: "150px",
+          overflow: "hidden",
+          backgroundColor: "#f8f9fa",
+          cursor: "pointer",
+        }}
+      >
+        {newProfilePic ? (
+          <img
+            src={URL.createObjectURL(newProfilePic)}
+            alt="New"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : profile.profilePic ? (
+          <img
+            src={`http://localhost:5000/uploads/${profile.profilePic}`}
+            alt="Current"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <span style={{ color: "#6c757d", fontSize: "14px" }}>Upload Image</span>
+        )}
+      </div>
+    </label>
+    <input
+      type="file"
+      id="editProfilePic"
+      accept="image/*"
+      className="form-control mt-2"
+      style={{ display: "none" }}
+      onChange={(e) => setNewProfilePic(e.target.files[0])}
+    />
+  </>
+) : (
+  <div
+    className="rounded-circle border border-secondary mb-2 d-flex align-items-center justify-content-center"
+    style={{
+      width: "150px",
+      height: "150px",
+      overflow: "hidden",
+      backgroundColor: "#f8f9fa",
+    }}
+  >
+    {profile.profilePic ? (
+      <img
+        src={`http://localhost:5000/uploads/${profile.profilePic}`}
+        alt="Profile"
+        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+      />
+    ) : (
+      <span style={{ color: "#6c757d", fontSize: "14px" }}>No Image</span>
+    )}
+  </div>
+)}
+
+                      
+                      
                     </div>
                   </div>
                 </div>
