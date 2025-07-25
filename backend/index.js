@@ -34,6 +34,7 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/profile", profileRoutes);
+app.use(express.json({ limit: '10mb' })); // or more if needed
 
 app.get("/", (req, res) => {
   res.send("API is running");

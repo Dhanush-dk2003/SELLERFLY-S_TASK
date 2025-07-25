@@ -1,21 +1,5 @@
 import prisma from "../prisma/client.js";
-import multer from "multer";
-import fs from "fs";
-import path from "path";
 
-// Set up multer for file upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = "uploads/";
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
-  },
-});
-export const upload = multer({ storage });
 export const getNextEmployeeId = async (req, res) => {
   const lastUser = await prisma.user.findFirst({ orderBy: { id: 'desc' } });
 
@@ -64,9 +48,11 @@ export const createUserProfile = async (req, res) => {
       bankName,
       accountNumber,
       ifscCode,
+      profilePic
     } = req.body;
 
-    const profilePic = req.file ? req.file.filename : null;
+   
+
 
     // Ensure officialEmail is unique
     const existingUser = await prisma.user.findFirst({

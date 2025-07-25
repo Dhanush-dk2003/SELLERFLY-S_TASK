@@ -5,7 +5,8 @@ const ViewProfile = () => {
   const [searchId, setSearchId] = useState("");
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [newProfilePic, setNewProfilePic] = useState(null);
+  const [newProfilePicBase64, setNewProfilePicBase64] = useState(null);
+
 
   const handleSearch = async () => {
     try {
@@ -21,33 +22,43 @@ const ViewProfile = () => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
+  const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onloadend = () => {
+    setNewProfilePicBase64(reader.result); // base64 string
+    setProfile((prev) => ({
+      ...prev,
+      profilePic: reader.result, // update local preview too
+    }));
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+};
+
 
   const handleEdit = () => setIsEditing(true);
   const handleSave = async () => {
-    try {
-      const formData = new FormData();
-      Object.entries(profile).forEach(([key, value]) => {
-        if (value !== null) formData.append(key, value);
-      });
+  try {
+    const updatedProfile = { ...profile };
 
-      if (newProfilePic) {
-        formData.append("profilePic", newProfilePic);
-      }
-
-      await API.put(`/profile/${profile.employeeId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      alert("Profile updated successfully!");
-      setIsEditing(false);
-      setNewProfilePic(null);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to update profile");
+    if (newProfilePicBase64) {
+      updatedProfile.profilePic = newProfilePicBase64;
     }
-  };
+
+    await API.put(`/profile/${profile.employeeId}`, updatedProfile);
+
+    alert("Profile updated successfully!");
+    setIsEditing(false);
+    setNewProfilePicBase64(null);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update profile");
+  }
+};
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this profile?"))
@@ -123,9 +134,9 @@ const ViewProfile = () => {
                                 cursor: "pointer",
                               }}
                             >
-                              {newProfilePic ? (
+                              {newProfilePicBase64 ? (
                                 <img
-                                  src={URL.createObjectURL(newProfilePic)}
+                                  src={newProfilePicBase64}
                                   alt="New"
                                   style={{
                                     width: "100%",
@@ -135,7 +146,7 @@ const ViewProfile = () => {
                                 />
                               ) : profile.profilePic ? (
                                 <img
-                                  src={`http://localhost:5000/uploads/${profile.profilePic}`}
+                                  src={profile.profilePic}
                                   alt="Current"
                                   style={{
                                     width: "100%",
@@ -158,9 +169,8 @@ const ViewProfile = () => {
                             accept="image/*"
                             className="form-control mt-2"
                             style={{ display: "none" }}
-                            onChange={(e) =>
-                              setNewProfilePic(e.target.files[0])
-                            }
+                            onChange={handleImageChange}
+                            
                           />
                         </>
                       ) : (
@@ -175,7 +185,7 @@ const ViewProfile = () => {
                         >
                           {profile.profilePic ? (
                             <img
-                              src={`http://localhost:5000/uploads/${profile.profilePic}`}
+                              src={newProfilePicBase64}
                               alt="Profile"
                               style={{
                                 width: "100%",

@@ -41,34 +41,42 @@ const CreateProfileForm = () => {
   };
 
   const handleImageChange = (e) => {
-    setFormData((prev) => ({ ...prev, profilePic: e.target.files[0] }));
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onloadend = () => {
+    setFormData((prev) => ({
+      ...prev,
+      profilePic: reader.result, // base64 string
+    }));
   };
+
+  if (file) {
+    reader.readAsDataURL(file); // Convert to base64
+  }
+};
 
   const handleSubmit = async (e) => {
   e.preventDefault();
 
-  const form = new FormData();
-  for (const key in formData) {
-    form.append(key, formData[key]);
-  }
-
   try {
-    const response = await fetch('http://localhost:5000/api/users/create', {
-      method: 'POST',
-      body: form,
+    const response = await fetch("http://localhost:5000/api/users/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
     });
 
     const result = await response.json();
     if (response.ok) {
-      alert('Profile created successfully!');
-      // Optional: reset formData or redirect
+      alert("Profile created successfully!");
     } else {
-      alert(result.message || 'Error occurred');
+      alert(result.message || "Error occurred");
     }
   } catch (err) {
-    alert('Failed to submit: ' + err.message);
+    alert("Failed to submit: " + err.message);
   }
 };
+
 
 
   return (
@@ -94,7 +102,7 @@ const CreateProfileForm = () => {
                   >
                     {formData.profilePic ? (
                       <img
-                        src={URL.createObjectURL(formData.profilePic)}
+                        src={formData.profilePic}
                         alt="Profile"
                         style={{
                           width: "100%",
@@ -130,7 +138,7 @@ const CreateProfileForm = () => {
                     <input
                       type="text"
                       className="form-control"
-                      value={formData.employeeId}
+                      value={formData.employeeId || ""}
                       onChange={handleChange}
                     />
                   </div>
